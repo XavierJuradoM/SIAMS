@@ -1,0 +1,44 @@
+.login-container {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+}
+
+
+.login-form {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    width: 520px;
+    max-width: 100%;
+    padding: 35px 35px 15px 35px;
+    margin: 120px auto;
+}
+
+.title {
+    font-size: 26px;
+    font-weight: 400;
+    color: #666762;
+    margin: 0px auto 40px auto;
+    text-align: center;
+    font-weight: bold;
+}
+
+.logo{
+    margin-bottom: 46px;
+    display: flex;
+    justify-content: center;
+}
+
+.img-logo {
+    max-width: 25%;
+}
+
+.boton-ingresar {
+    margin-top: 15px;
+}
+
+.ingresar{
+    color: white;
+}

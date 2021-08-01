@@ -1,0 +1,60 @@
+.formulario{
+    display: flex;
+    justify-content: center;
+}
+
+.atras {
+    margin-left: 20px;
+    color: #666778;
+}
+
+
+.titulo-registro {
+    text-align: center;
+    color: #666778;
+
+}
+
+.logo-pequeno {
+    width: 20%;
+    max-width: 200px;
+    margin-left: 20px;
+    margin-top: 15px;
+}
+
+.login-container {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+}
+
+
+.login-form {
+    position: absolute;
+    /*left: 0;
+    right: 0;*/
+
+    width: 520px;
+    max-width: 100%;
+    padding: 35px 35px 15px 35px;
+
+}
+
+/*
+.title {
+    font-size: 26px;
+    font-weight: 400;
+    color: #666762;
+    margin: 0px auto 40px auto;
+    text-align: center;
+    font-weight: bold;
+}*/
+
+.logo{
+    margin-bottom: 46px;
+    text-align: center;
+}
+
+.img-logo {
+    max-width: 80%;
+}
