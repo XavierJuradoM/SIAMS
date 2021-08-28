@@ -23,8 +23,8 @@
                                 <div class="col-sm-8">
                                     <input 
                                     class="form-control" 
-                                    type="number" id="x_input" 
-                                    
+                                    type="number" 
+                                    id="x_input" 
                                     placeholder="Ingrese temperatura">
                                 </div>
                             </div>
