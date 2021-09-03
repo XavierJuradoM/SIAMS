@@ -33,5 +33,5 @@ Route::get('/servicioKmeans', 'CoordenadasController@servicioKmeans')->name('kme
 // Prediction routers
 Route::group(['middleware' => ['web', 'custom_auth']], function(){
     Route::get('/prediction', 'PagesController@prediction')->name('prediction');
-    Route::get('/getprediction', 'PredictionController@getprediction')->name('getprediction');
+    Route::post('/getprediction', 'PredictionController@getprediction')->name('getprediction');
 });

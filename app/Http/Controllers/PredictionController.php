@@ -5,29 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
-class PredeccionController extends Controller{
+class PredictionController extends Controller{
     
     public function getprediction(Request $request){
-        $dataSet = $this->getDataSet("");
+        $dataSet = $this->getDataSet($request->type_package);
+        return json_encode(["a"=>"hey funciona", "response"=>$dataSet]);
     }
 
     public function getDataSet($type_package){
         $url = 'https://5v8zqh5iua.execute-api.us-east-1.amazonaws.com/developing/prediction';
-        $client = new Client();
-        $params = [
-            'type_package' => $type_package
-        ];
-        $headers = array(
-            
-        );
+        
 
-        $respose = $client->request('POST', $url, [
-            'params'     => $params,
-            'headers'    => $headers
-        ]);
+        return Http::acceptJson()
+            ->post($url,[
+            'type_package' => 'temperature'
+        ])->json();
 
-        $resposeBody = json_decode($respose->getBody());
+
     }
     public function trainModel(){
         
