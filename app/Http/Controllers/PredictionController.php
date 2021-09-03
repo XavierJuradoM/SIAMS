@@ -8,21 +8,28 @@ use GuzzleHttp\Client;
 
 class PredeccionController extends Controller{
     
-    public function getpredict(Request $request){
-       $url = 'https://b28uq9h3hd.execute-api.us-east-1.amazonaws.com/default/predictionForCode';
-       $client = new Client();
-       $params = [
+    public function getprediction(Request $request){
+        $dataSet = $this->getDataSet("");
+    }
 
-       ];
-       $headers = array(
-           'predictionForCode-API' => 'lh9ZIWLa238oCve8HLQrX5ACs9LFEUWSad8um0X0'
-       );
+    public function getDataSet($type_package){
+        $url = 'https://5v8zqh5iua.execute-api.us-east-1.amazonaws.com/developing/prediction';
+        $client = new Client();
+        $params = [
+            'type_package' => $type_package
+        ];
+        $headers = array(
+            
+        );
 
-       $respose = $client->request('POST', $url, [
-           'params'     => $params,
-           'headers'    => $headers
-       ]);
+        $respose = $client->request('POST', $url, [
+            'params'     => $params,
+            'headers'    => $headers
+        ]);
 
-       $resposeBody = json_decode($respose->getBody());
+        $resposeBody = json_decode($respose->getBody());
+    }
+    public function trainModel(){
+        
     }
 }

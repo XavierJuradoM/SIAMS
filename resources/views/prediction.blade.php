@@ -30,6 +30,16 @@
                             </div>
                             <br>
                             <div class="from-group row">
+                                <label class="col-sm-4 col-form-labe" for=""><h6>Ingrese dato(X1):</h6> </label>
+                                <div class="col-sm-8">
+                                    <select name="val_2" id="val_2" class="form-control">
+                                        <option value="">0.1</option>
+                                        <option value="">0.1</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="from-group row">
                                 <label class="col-sm-4 col-form-labe" for=""><h6>Prediccion(Y): </h6></label>
                                 <div class="col-sm-8">
                                     <input class="form-control" type="text" id="predic" disabled>
