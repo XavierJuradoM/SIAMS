@@ -100,7 +100,12 @@
             }).then((response)=>{
                 if(response.ok)
                     return response.json()
+            }).catch(err=>{
+                console.log(err)
             })
+            if(response['python'] == null){
+                $('#init_predict').trigger("click")
+            }
             console.log(response)
         })
     });
