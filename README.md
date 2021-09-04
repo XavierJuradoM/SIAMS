@@ -83,3 +83,13 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 composer install
 php artisan serve
 php artisan key:generate
+
+
+## Notas grupo busqueda de patrones
+
+- Centos / RedHat
+    1. sudo yum install epel-release -y
+    2. sudo yum install R -y
+    3. sudo -i R
+    4. install.packages("arules")
+    5. install.packages("arulesViz")
