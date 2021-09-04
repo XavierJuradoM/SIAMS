@@ -28,23 +28,25 @@ def red_neural_pred(data,val_predict):
         mlr.fit(X_train, y_train)
         val_predict = float(val_predict)
         if mlr.score(X_train,y_train) > 0.90:
-            print("Probabilidad:",(mlr.score(X_train,y_train)))
-            print("Margen de error:",(1 - mlr.score(X_train,y_train)))
-            print("Predicion", mlr.predict([[val_predict]]))
-            print(json.dumps(
-                {
-                    "probabilidad": mlr.score(X_train,y_train),
-                    "prediciones": { 
-                        mlr.predict([[(val_predict-3)]]),
-                        mlr.predict([[(val_predict-2)]]),
-                        mlr.predict([[(val_predict-1)]]),
-                        mlr.predict([[val_predict]]),
-                        mlr.predict([[(val_predict+1)]]),
-                        mlr.predict([[(val_predict+2)]]),
-                        mlr.predict([[(val_predict+3)]])
-                    }
+            # print("Probabilidad:",(mlr.score(X_train,y_train)))
+            # print("Margen de error:",(1 - mlr.score(X_train,y_train)))
+            # print("Predicion", mlr.predict([[val_predict]])[0])
+            rest = {
+                "probability": mlr.score(X_train,y_train),
+                "prediction_for_value": mlr.predict([[val_predict]])[0],
+                "predictions": {
+                    "0":mlr.predict([[(val_predict)-3]])[0],
+                    "1":mlr.predict([[(val_predict)-2]])[0],
+                    "2":mlr.predict([[(val_predict)-1]])[0],
+                    "3":mlr.predict([[val_predict]])[0],
+                    "4":mlr.predict([[(val_predict)+1]])[0],
+                    "5":mlr.predict([[(val_predict)+2]])[0],
+                    "6":mlr.predict([[(val_predict)-3]])[0]
+                       
                 }
-            ))
+            }
+            rest = json.dumps(rest)
+            print(rest)
             # return mlr.predict([[val_predict]])
             break
             
