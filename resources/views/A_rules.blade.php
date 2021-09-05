@@ -10,13 +10,14 @@
 @endsection
 @section('content')
 <div role="main">
-    <h3>Reglas de Asociación SIAMS</h3>
+    <center> <h3>Reglas de Asociación SIAMS</h3> </center>
     <div class="container">
         <div class="row">
+        <br>
             <div class="col col-lg-3">
                 <div>
-
-                    <label for="filtro">Datos Georreferenciales:</label>
+               
+                    <label for="filtro">Base de Datos SIAMS:</label>
                     <br>
                     <label for="filtro">Fecha Inicio:</label>
                     <br>
@@ -27,6 +28,16 @@
                     <input id="fecha_fin" name="fecha_fin" type="datetime-local" required="">
                     <br><br>
                     <br>
+                    <label>Cantidad de Registro: </label>
+                    <select id="nregistro" name="nregistro" required="">
+                        <option value=0>--</option>
+                        <!-- <option value=0.0065>1000</option>
+                        <option value=0.055>10000</option>
+                        <option value=0.110>20000</option> -->
+                        <option value=1000>1000</option>
+                        <option value=10000>10000</option>
+                        <option value=20000>20000</option>
+                    </select><br><br>
                     <hr>
                     <h6>Parámetros:</h6>
                     <label>Nivel de soporte min: </label>
@@ -555,12 +566,14 @@
 
 
                 },
-                error: function() {
+                error: function(xhr, ajaxOptions, thrownError) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
                         text: 'Parece que hubo un error! 2',
                     });
+                    alert(xhr.status);
+                    alert(thrownError);
                 }
             });
         });
