@@ -21,14 +21,14 @@ def red_neural_pred(data,val_predict):
 
         mlr = MLPRegressor(
             solver='lbfgs',
-            # max_iter=5000,
+            max_iter=5000,
             alpha=1e-5,
             hidden_layer_sizes=(15,15),
             random_state=1,
             )
         mlr.fit(X_train, y_train)
         val_predict = float(val_predict)
-        if mlr.score(X_train,y_train) > 0.60:
+        if mlr.score(X_train,y_train) > 0.30:
             rest = {
                 "probability": mlr.score(X_train,y_train),
                 "prediction_for_value": mlr.predict([[val_predict]])[0],

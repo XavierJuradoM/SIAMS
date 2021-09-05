@@ -17,7 +17,7 @@ class PredictionController extends Controller{
             $dataSet = $this->getDataSet($request->type_package);
             // error_log($dataSet);
             $rest = shell_exec(
-                "timeout 8s python3 ".storage_path()."/prediction/prediction_neural_network.py '".json_encode($dataSet['body'])."' ".$request->xForPrediction
+                "timeout 10s python3 ".storage_path()."/prediction/prediction_neural_network.py '".json_encode($dataSet['body'])."' ".$request->xForPrediction
             );
             // shell_exec('kill python3');
             if($rest != null){

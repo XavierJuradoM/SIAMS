@@ -32,7 +32,9 @@
 
       {{-- For create grafics charts --}}
       <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-      <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js">
+      <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+      <script src="{{asset('js/chartist-plugin-threshold.js')}}"></script>
+      <script src="{{asset('js/chartist-plugin-pointlabels.js')}}"></script>
 
       <script src="https://kit.fontawesome.com/dfea41f182.js" crossorigin="anonymous"></script>
 

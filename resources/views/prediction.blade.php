@@ -2,9 +2,10 @@
 @section('title', 'Prediccion')
 @section('content')
     <div role="main">
+       <div class="container">
         <h3>Prediccion</h3>
         <div class="row">
-            <div class="col col-lg-5">
+            <div class="col-sm">
                 <div class="card">
                     <div class="card-body">
                         <div class="container">
@@ -19,7 +20,7 @@
                                 </div>
                             </div>
                             <br>
-                            <div class="from-group row">
+                            <div class="from-group row" id="seption_normal">
                                 <label class="col-sm-4 col-form-labe" for=""><h6>Ingrese dato:</h6> </label>
                                 <div class="col-sm-8">
                                     <input 
@@ -27,6 +28,27 @@
                                     type="number" 
                                     id="x_input" 
                                     placeholder="Ingrese temperatura">
+                                </div>
+                            </div>
+                            <div class="from-group row" id="seption_hour">
+                                <label class="col-sm-4 col-form-labe" for=""><h6>Ingrese dato(HH:MM):</h6> </label>
+                                <div class="col-sm-4">
+                                    <input 
+                                    class="form-control" 
+                                    type="number" 
+                                    id="x_input_hour" 
+                                    min="00"
+                                    max="24"
+                                    placeholder="Ingrese Hora">
+                                </div>
+                                <div class="col-sm-4">
+                                    <input 
+                                    class="form-control" 
+                                    type="number" 
+                                    min="00"
+                                    max="59"
+                                    id="x_input_minute" 
+                                    placeholder="Ingrese Minuto">
                                 </div>
                             </div>
                             <br>
@@ -64,10 +86,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col col-lg-5">
+            <div class="col-sm">
                 <div class="ct-chart ct-perfect-fourth"></div>
             </div>
         </div>
+       </div>
     </div>
 @endsection
 @section('scripts')
@@ -75,7 +98,15 @@
 
 <script>
     $(document).ready(function(){
+        new Chartist.Line('.ct-chart',{
+            labels: [0,1,2,3,4,5,6,7,8,9]
+        },{
+            fullWidth: true
+        });
         var xInput = $('#x_input')
+        var section_normal = document.getElementById("seption_normal");
+        var section_hour = document.getElementById("seption_hour");
+        section_hour.style.display = 'none';
         var currentPackage = ""
         var namePackage = ''
         const packages = {
@@ -84,13 +115,27 @@
             d: 'distance'
         }
         const defaultPackage = "temperature"
-        namePackage = defaultPackage
-        $('#package').click(function(){
+        namePackage = ''
+        $('#package').change(function(){
             currentPackage = $(this).children("option:selected").val()
-            namePackage = packages[currentPackage]
+            namePackage = packages[currentPackage] || defaultPackage
+            if(namePackage == "hour"){
+                section_hour.style.display = ''
+                section_normal.style.display = 'none'
+            }else{
+                section_hour.style.display = 'none'
+                section_normal.style.display = ''
+            }
         });
         $('#init_predict').click(async function(){
-            let xForPrediction = $('#x_input').val();
+            let xForPrediction = ""
+            if(section_normal.style.display != 'none'){
+                xForPrediction = $('#x_input').val();
+            }else{
+                xForPrediction = $('#x_input_hour').val()+$('#x_input_minute').val()
+            }
+            namePackage = packages[currentPackage] || defaultPackage
+            console.log(namePackage)
             if(xForPrediction === ''){
                 Swal.fire(
                     'Datos Requeridos',
@@ -128,10 +173,9 @@
                 }
             })
             objectResponse = JSON.parse(String(resp.value).replace('None',''))
-            $("#val_prediction").val(objectResponse.prediction_for_value+"(Segundos)")
-            $("#score").val(objectResponse.probability)
-            $("#error_margin").val((1 - objectResponse.probability))
-            console.log(objectResponse.predictions);
+            $("#val_prediction").val(objectResponse.prediction_for_value.toFixed(4)+"(Segundos)")
+            $("#score").val(objectResponse.probability.toFixed(4))
+            $("#error_margin").val((1 - objectResponse.probability).toFixed(4))
             var values = []
             var labels = []
             objectResponse.predictions.forEach(prediction=>{
@@ -140,17 +184,89 @@
             })
             console.log(values)
             console.log(labels)
+            console.log(Chartist);
             const ctx = $("#chart_prediction")
             var data = {
                 labels: labels,
                 series: [values]
             }
             var options = {
-                fullWidth: true
+                fullWidth: true,
+                low: 0,
+                showLine: true,
+                showArea: false,
+                axisY: {
+                    onlyInteger: true
+                },
+                color: 'blue',
+                plugins: [
+                    Chartist.plugins.ctThreshold({
+                    threshold: objectResponse.prediction_for_value
+                    }),
+                    Chartist.plugins.ctPointLabels({
+                    textAnchor: 'middle',
+                    labelInterpolationFnc: function(value) {
+                            if(value == objectResponse.prediction_for_value)
+                                return '(('+ value.toFixed(4)+'))'
+                            return value.toFixed(4)
+                        }
+                    })
+                ]
+                // axisX: {
+                //     showLabel: true,
+                //     offset: 0
+                // },
+                // axisY: {
+                //     showLabel: true,
+                //     offset: 0
+                // }
             }
 
-            new Chartist.Line('.ct-chart',data,options);
-            
+            var chart = new Chartist.Line('.ct-chart',data,options);
+                        // Let's put a sequence number aside so we can use it in the event callbacks
+            var seq = 0;
+
+            // Once the chart is fully created we reset the sequence
+            chart.on('created', function() {
+            seq = 0;
+            });
+
+            // On each drawn element by Chartist we use the Chartist.Svg API to trigger SMIL animations
+            chart.on('draw', function(data) {
+            if(data.type === 'point') {
+                // If the drawn element is a line we do a simple opacity fade in. This could also be achieved using CSS3 animations.
+                data.element.animate({
+                opacity: {
+                    // The delay when we like to start the animation
+                    begin: seq++ * 80,
+                    // Duration of the animation
+                    dur: 500,
+                    // The value where the animation should start
+                    from: 0,
+                    // The value where it should end
+                    to: 1
+                },
+                x1: {
+                    begin: seq++ * 80,
+                    dur: 500,
+                    from: data.x - 100,
+                    to: data.x,
+                    // You can specify an easing function name or use easing functions from Chartist.Svg.Easing directly
+                    easing: Chartist.Svg.Easing.easeOutQuart
+                }
+                });
+            }
+            });
+
+            // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
+            chart.on('created', function() {
+            if(window.__anim0987432598723) {
+                clearTimeout(window.__anim0987432598723);
+                window.__anim0987432598723 = null;
+            }
+            window.__anim0987432598723 = setTimeout(chart.update.bind(chart), 8000);
+            });
+
         })
     });
     
