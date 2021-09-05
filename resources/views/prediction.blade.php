@@ -44,6 +44,13 @@
                                 </div>
                             </div>
                             <br>
+                            <div class="from-group row">
+                                <label class="col-sm-4 col-form-labe" for=""><h6>Marge de error: </h6></label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" id="error_margin" disabled>
+                                </div>
+                            </div>
+                            <br>
                             <div class="from-group row text-center">
                                 <div class="col">
                                     <input 
@@ -58,7 +65,7 @@
                 </div>
             </div>
             <div class="col col-lg-5">
-                <canvas id="chart_prediction"></canvas>
+                <div class="ct-chart ct-perfect-fourth"></div>
             </div>
         </div>
     </div>
@@ -118,43 +125,32 @@
                         return response.json()
                     }
                 })
-            }
+                }
             })
             objectResponse = JSON.parse(String(resp.value).replace('None',''))
-            $("#val_prediction").val(objectResponse.prediction_for_value)
+            $("#val_prediction").val(objectResponse.prediction_for_value+"(Segundos)")
             $("#score").val(objectResponse.probability)
+            $("#error_margin").val((1 - objectResponse.probability))
+            console.log(objectResponse.predictions);
+            var values = []
+            var labels = []
+            objectResponse.predictions.forEach(prediction=>{
+                labels.push(prediction[0])
+                values.push(prediction[1])
+            })
+            console.log(values)
+            console.log(labels)
             const ctx = $("#chart_prediction")
-            // var config = {
-            //     type: 'bar',
-            //     data: {
-            //         labels: ["x","y"],
-            //         datasets: [{
-            //             label: 'Transaksi Status',
-            //             data: objectResponse.predictions,
-            //             backgroundColor: 'rgba(75, 192, 192, 1)',
+            var data = {
+                labels: labels,
+                series: [values]
+            }
+            var options = {
+                fullWidth: true
+            }
 
-            //         }]
-            //     }
-            // };
-            // var chart = new Chart(ctx, config);
-            // const response = await fetch('getprediction',{
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'X-CSRF-Token': $("meta[name='csrf-token']").attr("content")
-            //     },
-            //     body: JSON.stringify({
-            //             type_package: namePackage,
-            //             xForPrediction: xForPrediction
-            //         })
-            // }).then((response)=>{
-            //     if(response.ok)
-            //         return response.json()
-            // }).catch(err=>{
-            //     console.log(err)
-            // })
-            // objectResponse = JSON.parse(response.replace('None',''))
-            // console.log(objectResponse.probability)
+            new Chartist.Line('.ct-chart',data,options);
+            
         })
     });
     

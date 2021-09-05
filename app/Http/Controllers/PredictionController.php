@@ -15,8 +15,9 @@ class PredictionController extends Controller{
         $rest = [];
         do{
             $dataSet = $this->getDataSet($request->type_package);
+            // error_log($dataSet);
             $rest = shell_exec(
-                "timeout 5s python3 ".storage_path()."/prediction/prediction_neural_network.py '".json_encode($dataSet['body'])."' ".$request->xForPrediction
+                "timeout 8s python3 ".storage_path()."/prediction/prediction_neural_network.py '".json_encode($dataSet['body'])."' ".$request->xForPrediction
             );
             // shell_exec('kill python3');
             if($rest != null){
@@ -32,15 +33,12 @@ class PredictionController extends Controller{
 
     public function getDataSet($type_package){
         $url = env('URL_LAMDA_PREDICTION');
-        
+        error_log($type_package);
         return Http::acceptJson()
-            ->post($url,[
-            'type_package' => 'temperature'
-        ])->json();
-        
-
-    }
-    public function trainModel(){
-        
+            ->post($url,
+            [
+            'type_package' => $type_package
+            ]
+            )->json();
     }
 }

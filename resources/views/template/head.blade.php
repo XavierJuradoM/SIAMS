@@ -30,6 +30,10 @@
       <link href="{{ asset('css/leaflet.css') }}" rel="stylesheet">
       <link href="{{ asset('css/animate.min.css') }}" rel="stylesheet">
 
+      {{-- For create grafics charts --}}
+      <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+      <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js">
+
       <script src="https://kit.fontawesome.com/dfea41f182.js" crossorigin="anonymous"></script>
 
       @yield('estilo')
