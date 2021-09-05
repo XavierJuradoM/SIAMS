@@ -6,7 +6,8 @@
 
             <li><a><i class="fa fa-search"></i> Análisis <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="{{ url('/') }}">Puntos Georeferenciales</a></li>
+                    <li><a href="{{ url('/analisis') }}">Puntos Georeferenciales</a></li>
+                    <li><a href="{{ url('/association_rules') }}">Reglas de Asociación</a></li>
                     <li><a href="{{ url('/analisis_trayectoria') }}">Eclat</a></li>
                      <!--<li><a href="{{ url('/k-means') }}">K-means</a></li>-->
                 </ul>

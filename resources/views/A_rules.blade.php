@@ -1,22 +1,22 @@
 @extends('base')
 
-@section('title', 'Analisis de Trayectoria')
+@section('title', 'Reglas de Asociación SIAMS')
 @section('estilo')
 <style>
     #map {
-        height: 480px;
+        height: 450px;
     }
 </style>
 @endsection
 @section('content')
 <div role="main">
-    <h3>Analisis de Trayectorias</h3>
+    <h3>Reglas de Asociación SIAMS</h3>
     <div class="container">
         <div class="row">
-            <div class="col col-lg-2">
+            <div class="col col-lg-3">
                 <div>
 
-                    <label for="filtro">Filtrar por:</label>
+                    <label for="filtro">Datos Georreferenciales:</label>
                     <br>
                     <label for="filtro">Fecha Inicio:</label>
                     <br>
@@ -28,6 +28,29 @@
                     <br><br>
                     <br>
                     <hr>
+                    <h6>Parámetros:</h6>
+                    <label>Nivel de soporte min: </label>
+                    <select id="soporte" name="soporte" required="">
+                        <option value=0>--</option>
+                        <option value=0.006>0.006</option>
+                        <option value=0.007>0.007</option>
+                        <option value=0.008>0.008</option>
+                    </select><br><br>
+                    <label>Nivel mínimo de confianza: </label>
+                    <select id="confianza" name="confianza" required="">
+                        <option value=0>--</option>
+                        <option value=0.006>0.006</option>
+                        <option value=0.007>0.007</option>
+                        <option value=0.008>0.008</option>
+                    </select><br><br>
+                    <label>Lift Minimo: </label>
+                    <select id="lift" name="lift" required="">
+                        <option value=0>--</option>
+                        <option value=0.006>0.006</option>
+                        <option value=0.007>0.007</option>
+                        <option value=0.008>0.008</option>
+                    </select><br><br>
+                    <hr>
                     <label>Cantidad de Registro: </label>
                     <select id="nregistro" name="nregistro" required="">
                         <option value=0>--</option>
@@ -38,18 +61,9 @@
                         <option value=10000>10000</option>
                         <option value=20000>20000</option>
                     </select><br><br>
-                    <hr>
-                    <h6>Eclat</h6>
-                    <label>Nivel de soporte: </label>
-                    <select id="soporte" name="soporte" required="">
-                        <option value=0>--</option>
-                        <option value=0.006>0.006</option>
-                        <option value=0.007>0.007</option>
-                        <option value=0.008>0.008</option>
-                    </select><br><br>
                     <input id="consulta" type="button" value="Consultar">
                 </div>
-
+    
             </div>
 
             <div class="col-sm">
@@ -377,17 +391,17 @@
 
                 },
                 error: function() {
-                    if (centroide == null || centroide == 0) {
+                    if (soporte == null || soporte == 0) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Falta seleccionar un numero de centroides',
+                            text: 'No se ha definido el parámetro de Soporte',
                         });
                     } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Parece que hubo un error!',
+                            text: 'Parece que hubo un error! 1',
                         });
                     }
 
@@ -460,7 +474,7 @@
             console.log(maxAmount);
             let timerInterval
             Swal.fire({
-                title: 'Buscando puntos georeferenciales ECLAT...',
+                title: 'Buscando puntos georeferenciales en la base datos del SIAMS...',
                 html: '',
                 timer: 15000,
                 timerProgressBar: true,
@@ -541,11 +555,11 @@
 
 
                 },
-                error: function(ers) {
+                error: function() {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'Parece que hubo un error!',
+                        text: 'Parece que hubo un error! 2',
                     });
                 }
             });
