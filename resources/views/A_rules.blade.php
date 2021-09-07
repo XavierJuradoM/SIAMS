@@ -482,6 +482,7 @@
 
             console.log(startDate);
             console.log(endDate);
+            console.log(support);
             console.log(maxAmount);
             let timerInterval
             Swal.fire({
@@ -513,7 +514,7 @@
 
 
             $.ajax({
-                url: '/puntos/eclat',
+                url: '/puntos/a_rules',
                 data: {
                     startDate: startDate,
                     endDate: endDate,

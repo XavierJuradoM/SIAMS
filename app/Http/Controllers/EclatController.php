@@ -45,7 +45,7 @@ class EclatController extends Controller
         $fecha_csv = date("H:i:s");
         $fecha_csv = str_replace(':', '_', $fecha_csv);
 
-        $file = str_replace('\\', '/', storage_path()) . '/archivos_eclat/datainicial' . $fecha_csv . '.csv';
+        $file = str_replace('\\', '/', storage_path()) . '/archivos_eclat/coordenadas-' . $fecha_csv . '.csv';
         $fp = fopen($file, 'w');
 
 
@@ -59,7 +59,7 @@ class EclatController extends Controller
         $scatterplot = $path . '/scatterplot.png';
         fclose($fp);
         shell_exec('Rscript '. $algorith  .' '. $file . ' ' . $support . ' ' . $csv. ' ' . $graphic . ' ' . $scatterplot);
-        $handle = fopen($csv, "r");
+        $handle = fopen($csv, "w+");
         $response = [];
         $row = 0;
          while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {

@@ -84,7 +84,9 @@ composer install
 php artisan serve
 php artisan key:generate
 
-
+Modificar archivo php.ini
+;extension=pdo_pgsql 
+Remover el ';'
 ## Notas grupo busqueda de patrones
 
 - Centos / RedHat

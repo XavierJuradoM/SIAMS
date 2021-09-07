@@ -24,6 +24,7 @@ Route::group(['middleware' => ['web', 'custom_auth']], function () {
     Route::get('/association_rules', 'ARulesController@A_rules')->name('trayectoria_AR');
     Route::get('/puntos', 'CoordenadasController@puntos')->name('puntito');
     Route::get('/puntos/eclat', 'EclatController@puntos')->name('puntos_eclat');
+    Route::get('/puntos/a_rules', 'ARulesController@puntos')->name('puntos_a_rules');
     Route::get('/algoritmo/eclat', 'EclatController@algoritmo')->name('eclat');
     Route::get('/algoritmo', 'CoordenadasController@algoritmo')->name('kmeans');
 });

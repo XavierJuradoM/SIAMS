@@ -258,7 +258,7 @@ class CoordenadasController extends Controller
         $fecha_csv = date("H:i:s");
         $fecha_csv = str_replace(':', '_', $fecha_csv);
 
-        $parametro1 = storage_path() . '/archivos_kmeans/datainicial' . $fecha_csv . '.csv';
+        $parametro1 = storage_path() . '/archivos_kmeans/coordenadas-' . $fecha_csv . '.csv';
         $fp = fopen($parametro1, 'w');
 
         foreach ($matriz as $campos) {
@@ -306,7 +306,7 @@ class CoordenadasController extends Controller
     public function servicioKmeans()
     {
         $matriz = [['id', 'latitud', 'longitud']];
-        $parametro1 = storage_path() . '/archivos_kmeans/datainicial23_42_09.csv';
+        $parametro1 = storage_path() . '/archivos_kmeans/coordenadas-23_42_09.csv';
         $fp = fopen($parametro1, 'w');
 
         foreach ($matriz as $campos) {

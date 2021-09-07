@@ -19,8 +19,8 @@ class ARulesController extends Controller
         $endDate = $request->endDate;
         $maxAmount = $request->maxAmount;
         $support = $request->support;
-        Storage::deleteDirectory('/archivos_eclat');
-        Storage::makeDirectory('/archivos_eclat');
+        Storage::deleteDirectory('/archivos_apriori');
+        Storage::makeDirectory('/archivos_apriori');
 
         $startDate = str_replace('T', ' ', $startDate);
         $endDate = str_replace('T', ' ', $endDate);
@@ -45,7 +45,7 @@ class ARulesController extends Controller
         $fecha_csv = date("H:i:s");
         $fecha_csv = str_replace(':', '_', $fecha_csv);
 
-        $file = str_replace('\\', '/', storage_path()) . '/archivos_eclat/datainicial' . $fecha_csv . '.csv';
+        $file = str_replace('\\', '/', storage_path()) . '/archivos_apriori/datainicial' . $fecha_csv . '.csv';
         $fp = fopen($file, 'w');
 
 
@@ -53,8 +53,8 @@ class ARulesController extends Controller
             fputcsv($fp, $campos);
         }
         $algorith = storage_path() . '/eclat/algoritmo.R';
-        $path = str_replace('\\', '/', storage_path()) . '/archivos_eclat';
-        $csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
+        $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
+        $csv = $path . '/datainicial' . $fecha_csv . '.csv ';
         $graphic = $path . '/graphic.png ';
         $scatterplot = $path . '/scatterplot.png';
         fclose($fp);
