@@ -6,9 +6,26 @@
         <h3>Prediccion</h3>
         <div class="row">
             <div class="col-sm">
-                <div class="card">
+                <div class="card h-100 d-inline-block">
+                    <br>
                     <div class="card-body">
-                        <div class="container">
+                        <div class="container align-items-center">
+                            <div class="from-group row">
+                                <label class="col-sm-4 col-form-labe" for=""><h6>Ingrese rango de fecha: </h6> </label>
+                                <div class="col-sm-4">
+                                    <input 
+                                    class="form-control" 
+                                    type="date" 
+                                    id="date_start">
+                                </div>
+                                <div class="col-sm-4">
+                                    <input 
+                                    class="form-control" 
+                                    type="date" 
+                                    id="date_end" >
+                                </div>
+                            </div>
+                            <br>
                             <div class="from-group row">
                                 <label class="col-sm-4 col-form-labe" for=""><h6>Analisis:</h6> </label>
                                 <div class="col-sm-8">
@@ -82,12 +99,26 @@
                                     value="Realizar prediccion">
                                 </div>
                             </div>
+                            <br>
+                            <div class="row text-center">
+                                <p id="details_text"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-sm">
                 <div class="ct-chart ct-perfect-fourth"></div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-sm">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="text-center">Coordenadas Obtenidas</h4>
+                    </div>
+                </div>
             </div>
         </div>
        </div>
@@ -103,20 +134,34 @@
         },{
             fullWidth: true
         });
+
         var xInput = $('#x_input')
         var section_normal = document.getElementById("seption_normal");
         var section_hour = document.getElementById("seption_hour");
-        section_hour.style.display = 'none';
-        var currentPackage = ""
+        var x_input_hour = $('#x_input_hour')
+        var x_input_minute = $('#x_input_minute')
+        var currentPackage = "t"
         var namePackage = ''
+        var details_text = $('#details_text');
+
+        section_hour.style.display = 'none';
+
         const packages = {
             t: 'temperature',
             h: 'hour',
             d: 'distance'
         }
         const defaultPackage = "temperature"
-        namePackage = ''
+        
+        const detailsPackage = {
+            t: `DADO LOS CAMBIOS EN LOS NIVELES DE AMBIENTE (TEMPERATURA) SE PREDICE EL TIEMPO DE 
+                DURACION (SEGUNDOS) EN QUE UNA TRAYECTORIA REALIZA SU RECORRIDO.`,
+            d: `DADA POR LA DURACIÓN DE LLEGAR UN PUNTO A OTRO (METROS POR SEGUNDO)`,
+            h: `DADA POR HORAS MAS TRANSCURRIDAS DADA`
+        }
+        details_text.text(detailsPackage['t']);
         $('#package').change(function(){
+            clearInputs()
             currentPackage = $(this).children("option:selected").val()
             namePackage = packages[currentPackage] || defaultPackage
             if(namePackage == "hour"){
@@ -126,14 +171,18 @@
                 section_hour.style.display = 'none'
                 section_normal.style.display = ''
             }
+            // set details text
+            details = detailsPackage[currentPackage] || defaultPackage
+            details_text.text(details)
         });
         $('#init_predict').click(async function(){
             let xForPrediction = ""
             if(section_normal.style.display != 'none'){
                 xForPrediction = $('#x_input').val();
             }else{
-                xForPrediction = $('#x_input_hour').val()+$('#x_input_minute').val()
+                xForPrediction = x_input_hour.val() + x_input_minute.val()
             }
+            console.log(currentPackage)
             namePackage = packages[currentPackage] || defaultPackage
             console.log(namePackage)
             if(xForPrediction === ''){
@@ -145,33 +194,34 @@
                 return;
             }
             resp = await Swal.fire({
-            title: 'Desea continuar con la prediccion?',
-            text: "Una vez iniciado el proceso no se detendra",
-            icon: 'info',
-            showCancelButton: true,
-            allowOutsideClick: false,
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Si',
-            showLoaderOnConfirm: true,
-            allowOutsideClick: () => !Swal.isLoading(),
-            preConfirm: async function(){
-                return await fetch('getprediction',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': $("meta[name='csrf-token']").attr("content")
-                },
-                body: JSON.stringify({
-                        type_package: namePackage,
-                        xForPrediction: xForPrediction
+                title: 'Desea continuar con la prediccion?',
+                text: "Una vez iniciado el proceso no se detendra",
+                icon: 'info',
+                showCancelButton: true,
+                allowOutsideClick: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Si',
+                showLoaderOnConfirm: true,
+                allowOutsideClick: () => !Swal.isLoading(),
+                preConfirm: async function(){
+                    return await fetch('getprediction',{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': $("meta[name='csrf-token']").attr("content")
+                    },
+                    body: JSON.stringify({
+                            type_package: namePackage,
+                            xForPrediction: xForPrediction
+                        })
+                    }).then((response)=>{
+                        if(response.ok){
+                            return response.json()
+                        }
                     })
-                }).then((response)=>{
-                    if(response.ok){
-                        return response.json()
                     }
-                })
-                }
             })
+
             objectResponse = JSON.parse(String(resp.value).replace('None',''))
             $("#val_prediction").val(objectResponse.prediction_for_value.toFixed(4)+"(Segundos)")
             $("#score").val(objectResponse.probability.toFixed(4))
@@ -182,10 +232,10 @@
                 labels.push(prediction[0])
                 values.push(prediction[1])
             })
+
             console.log(values)
             console.log(labels)
-            console.log(Chartist);
-            const ctx = $("#chart_prediction")
+
             var data = {
                 labels: labels,
                 series: [values]
@@ -212,21 +262,12 @@
                         }
                     })
                 ]
-                // axisX: {
-                //     showLabel: true,
-                //     offset: 0
-                // },
-                // axisY: {
-                //     showLabel: true,
-                //     offset: 0
-                // }
             }
 
             var chart = new Chartist.Line('.ct-chart',data,options);
-                        // Let's put a sequence number aside so we can use it in the event callbacks
+
             var seq = 0;
 
-            // Once the chart is fully created we reset the sequence
             chart.on('created', function() {
             seq = 0;
             });
@@ -268,6 +309,15 @@
             });
 
         })
+
+        function clearInputs(){
+            xInput.val("")
+            x_input_hour.val("")
+            x_input_minute.val("")
+            $("#val_prediction").val("")
+            $("#score").val("")
+            $("#error_margin").val("")
+        }
     });
     
 </script>

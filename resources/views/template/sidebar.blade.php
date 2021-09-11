@@ -22,7 +22,7 @@
         </ul>
         <ul class="nav side-menu">
 
-            <li><a><i class="fa fa-chart-line"></i> Predeccion <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-chart-line"></i> Prediccion <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="{{ url('/prediction') }}">Redes Neuronales</a></li>
                      <!--<li><a href="{{ url('/k-means') }}">K-means</a></li>-->

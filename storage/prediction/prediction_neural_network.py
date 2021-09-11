@@ -8,7 +8,12 @@ from sklearn.model_selection import train_test_split
 from joblib import dump, load
 from sklearn import metrics
 
-def red_neural_pred(data,val_predict):
+def red_neural_pred(data, val_predict, type_package):
+    range_prediction = {
+        temperature: 0.95,
+        hour: 0.70,
+        distance: 0.95
+    }
     dataset = pd.DataFrame(data,columns={'x','y'})
     dataset = dataset.dropna(how='any')
 
@@ -49,6 +54,6 @@ def red_neural_pred(data,val_predict):
             
 
 val_for_predict = json.loads(sys.argv[1])
-print(red_neural_pred(data=val_for_predict,val_predict=sys.argv[2]))
+print(red_neural_pred(data=val_for_predict,val_predict=sys.argv[2], type_package=sys.argv[3]))
 # print(model_nuronal([[val_for_predict]]))
 
