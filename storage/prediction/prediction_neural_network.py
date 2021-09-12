@@ -10,9 +10,9 @@ from sklearn import metrics
 
 def red_neural_pred(data, val_predict, type_package):
     range_prediction = {
-        temperature: 0.95,
-        hour: 0.70,
-        distance: 0.95
+        "temperature": 0.95,
+        "hour": 0.70,
+        "distance": 0.95
     }
     dataset = pd.DataFrame(data,columns={'x','y'})
     dataset = dataset.dropna(how='any')
@@ -34,19 +34,22 @@ def red_neural_pred(data, val_predict, type_package):
         mlr.fit(X_train, y_train)
         val_predict = float(val_predict)
         if mlr.score(X_train,y_train) > 0.30:
+            prediction_value = mlr.predict([[val_predict]])[0];
             rest = {
                 "probability": mlr.score(X_train,y_train),
-                "prediction_for_value": mlr.predict([[val_predict]])[0],
+                "prediction_for_value": prediction_value,
                 "predictions": [
                     [(val_predict)-15,mlr.predict([[(val_predict)-15]])[0]],
                     [(val_predict)-10,mlr.predict([[(val_predict)-10]])[0]],
                     [(val_predict)-5,mlr.predict([[(val_predict)-5]])[0]],
-                    [val_predict,mlr.predict([[val_predict]])[0]],
+                    [val_predict,prediction_value],
                     [(val_predict)+5,mlr.predict([[(val_predict)+1]])[0]],
                     [(val_predict)+2,mlr.predict([[(val_predict)+2]])[0]],
                     [(val_predict)+3,mlr.predict([[(val_predict)+3]])[0]]      
                 ]
             }
+            if prediction_value < 0:
+                break
             rest = json.dumps(rest)
             print(rest)
             # return mlr.predict([[val_predict]])

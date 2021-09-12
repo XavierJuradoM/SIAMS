@@ -16,13 +16,13 @@
                                     <input 
                                     class="form-control" 
                                     type="date" 
-                                    id="date_start">
+                                    id="start_date">
                                 </div>
                                 <div class="col-sm-4">
                                     <input 
                                     class="form-control" 
                                     type="date" 
-                                    id="date_end" >
+                                    id="end_date" >
                                 </div>
                             </div>
                             <br>
@@ -115,8 +115,19 @@
         <div class="row">
             <div class="col-sm">
                 <div class="card">
-                    <div class="card-body">
-                        <h4 class="text-center">Coordenadas Obtenidas</h4>
+                    <div class="card-body ">
+                        <h4 class="text-center text-primary">Coordenadas Obtenidas</h4>
+                        <div class="row text-center">
+                            <div class="col-sm">
+                                <h4>Latitud</h4>
+                                <h4 class="text-dark" id="latitude">0.00</h4>
+                            </div>
+                            
+                            <div class="col-sm">
+                                <h4>Longitud</h4>
+                                <h4 class="text-dark" id="longitude">0.00</h4>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,6 +154,8 @@
         var currentPackage = "t"
         var namePackage = ''
         var details_text = $('#details_text');
+        var latitide = $('#latitude');
+        var longitude = $('#longitude');
 
         section_hour.style.display = 'none';
 
@@ -161,7 +174,9 @@
         }
         details_text.text(detailsPackage['t']);
         $('#package').change(function(){
+
             clearInputs()
+
             currentPackage = $(this).children("option:selected").val()
             namePackage = packages[currentPackage] || defaultPackage
             if(namePackage == "hour"){
@@ -176,6 +191,37 @@
             details_text.text(details)
         });
         $('#init_predict').click(async function(){
+            let start_date = $('#start_date').val();
+            let end_date = $('#end_date').val();
+            if(start_date === '' || end_date === ''){
+                Swal.fire(
+                    'Datos Requeridos',
+                    'Ingrese el datos de rango',
+                    'warning'
+                )
+                return;
+            }
+            startDate = new Date(start_date);
+            endDate = new Date(end_date);
+            nowDate = new Date();
+
+            if(startDate < nowDate && endDate < nowDate){
+                if(startDate > endDate){
+                    Swal.fire(
+                    'Datos Incorrectos',
+                    'Las fechas deben ser menores de que la fecha actual',
+                    'warning'
+                    )
+                    return
+                }
+            }else{
+                Swal.fire(
+                    'Datos Incorrectos',
+                    'Las fechas deben ser menores de que la fecha actual',
+                    'warning'
+                )
+                return
+            }
             let xForPrediction = ""
             if(section_normal.style.display != 'none'){
                 xForPrediction = $('#x_input').val();
@@ -212,7 +258,9 @@
                     },
                     body: JSON.stringify({
                             type_package: namePackage,
-                            xForPrediction: xForPrediction
+                            xForPrediction: xForPrediction,
+                            start_date: start_date,
+                            end_date: end_date
                         })
                     }).then((response)=>{
                         if(response.ok){
@@ -221,7 +269,7 @@
                     })
                     }
             })
-
+            // getCoordinatesForPrediction
             objectResponse = JSON.parse(String(resp.value).replace('None',''))
             $("#val_prediction").val(objectResponse.prediction_for_value.toFixed(4)+"(Segundos)")
             $("#score").val(objectResponse.probability.toFixed(4))
@@ -263,7 +311,9 @@
                     })
                 ]
             }
-
+            getCoordinates({
+                    predictionValue: objectResponse.prediction_for_value,
+            });
             var chart = new Chartist.Line('.ct-chart',data,options);
 
             var seq = 0;
@@ -317,6 +367,25 @@
             $("#val_prediction").val("")
             $("#score").val("")
             $("#error_margin").val("")
+        }
+
+        async function getCoordinates({predictionValue}) {
+            console.log(predictionValue)
+            let response = await fetch('getcoordinates',{
+                method: 'POST',
+                headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': $("meta[name='csrf-token']").attr("content")
+                    },
+                body: JSON.stringify({
+                        predictionValue: predictionValue
+                })
+            }).then((response)=>{
+                if(response.ok){
+                    return response.json()
+                }
+            });
+            console.log(response.body)
         }
     });
     
