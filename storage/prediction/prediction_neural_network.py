@@ -7,12 +7,13 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
 from sklearn import metrics
+import warnings
 
 def red_neural_pred(data, val_predict, type_package):
     range_prediction = {
-        "temperature": 0.95,
-        "hour": 0.70,
-        "distance": 0.95
+        "temperature": 0.37,#70 con maquina obtima
+        "hour": 0.53,#60 con maquina obtima
+        "distance": 0.95 #datos mas relacionados
     }
     dataset = pd.DataFrame(data,columns={'x','y'})
     dataset = dataset.dropna(how='any')
@@ -21,6 +22,9 @@ def red_neural_pred(data, val_predict, type_package):
     y = dataset['y']
 
     X = x[:, np.newaxis]
+
+    ban = True
+    count = 0
     while True:
         X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3)
 
@@ -33,7 +37,11 @@ def red_neural_pred(data, val_predict, type_package):
             )
         mlr.fit(X_train, y_train)
         val_predict = float(val_predict)
-        if mlr.score(X_train,y_train) > 0.30:
+        warnings.warn(mlr.score(X_train,y_train).__str__())
+        # if mlr.score(X_train,y_train) < 0.1 and ban:
+        #     break
+        ban = False
+        if mlr.score(X_train,y_train) > range_prediction[type_package]:
             prediction_value = mlr.predict([[val_predict]])[0];
             rest = {
                 "probability": mlr.score(X_train,y_train),
@@ -54,9 +62,10 @@ def red_neural_pred(data, val_predict, type_package):
             print(rest)
             # return mlr.predict([[val_predict]])
             break
+        count = count + 1
             
 
 val_for_predict = json.loads(sys.argv[1])
-print(red_neural_pred(data=val_for_predict,val_predict=sys.argv[2], type_package=sys.argv[3]))
+red_neural_pred(data=val_for_predict,val_predict=sys.argv[2], type_package=sys.argv[3])
 # print(model_nuronal([[val_for_predict]]))
 

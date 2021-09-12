@@ -3,13 +3,14 @@
 @section('content')
     <div role="main">
        <div class="container">
-        <h3>Prediccion</h3>
+        <h3>Predicción</h3>
         <div class="row">
             <div class="col-sm">
-                <div class="card h-100 d-inline-block">
+                <div class="card h-100 w-100">
                     <br>
-                    <div class="card-body">
-                        <div class="container align-items-center">
+                    <div class="card-body vertical-center">
+                        <br>
+                        <div class="container">
                             <div class="from-group row">
                                 <label class="col-sm-4 col-form-labe" for=""><h6>Ingrese rango de fecha: </h6> </label>
                                 <div class="col-sm-4">
@@ -27,7 +28,7 @@
                             </div>
                             <br>
                             <div class="from-group row">
-                                <label class="col-sm-4 col-form-labe" for=""><h6>Analisis:</h6> </label>
+                                <label class="col-sm-4 col-form-labe" for=""><h6>Análisis:</h6> </label>
                                 <div class="col-sm-8">
                                     <select class="form-control" name="package" id="package">
                                         <option value="t">Temperatura</option>
@@ -44,7 +45,7 @@
                                     class="form-control" 
                                     type="number" 
                                     id="x_input" 
-                                    placeholder="Ingrese temperatura">
+                                    placeholder="Ingrese dato">
                                 </div>
                             </div>
                             <div class="from-group row" id="seption_hour">
@@ -70,7 +71,7 @@
                             </div>
                             <br>
                             <div class="from-group row">
-                                <label class="col-sm-4 col-form-labe" for=""><h6>Prediccion: </h6></label>
+                                <label class="col-sm-4 col-form-labe" for=""><h6>Predicción: </h6></label>
                                 <div class="col-sm-8">
                                     <input class="form-control" type="text" id="val_prediction" disabled>
                                 </div>
@@ -84,7 +85,7 @@
                             </div>
                             <br>
                             <div class="from-group row">
-                                <label class="col-sm-4 col-form-labe" for=""><h6>Marge de error: </h6></label>
+                                <label class="col-sm-4 col-form-labe" for=""><h6>Margen de error: </h6></label>
                                 <div class="col-sm-8">
                                     <input class="form-control" type="text" id="error_margin" disabled>
                                 </div>
@@ -96,7 +97,7 @@
                                     class="btn btn-info font-weight-bold" 
                                     type="button" 
                                     id="init_predict"
-                                    value="Realizar prediccion">
+                                    value="Realizar predicción">
                                 </div>
                             </div>
                             <br>
@@ -108,7 +109,7 @@
                 </div>
             </div>
             <div class="col-sm">
-                <div class="ct-chart ct-perfect-fourth"></div>
+                <div class="ct-chart ct-perfect-fourth" id="ct-chart1"></div>
             </div>
         </div>
         <br>
@@ -119,13 +120,23 @@
                         <h4 class="text-center text-primary">Coordenadas Obtenidas</h4>
                         <div class="row text-center">
                             <div class="col-sm">
+                                <h4>Velocidad</h4>
+                                <div class="text-dark" id="velocities">
+                    
+                                </div>
+                            </div>
+                            <div class="col-sm">
                                 <h4>Latitud</h4>
-                                <h4 class="text-dark" id="latitude">0.00</h4>
+                                <div class="text-dark" id="latitudes">
+
+                                </div>
                             </div>
                             
                             <div class="col-sm">
                                 <h4>Longitud</h4>
-                                <h4 class="text-dark" id="longitude">0.00</h4>
+                                <div class="text-dark" id="longitudes">
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -154,9 +165,9 @@
         var currentPackage = "t"
         var namePackage = ''
         var details_text = $('#details_text');
-        var latitide = $('#latitude');
-        var longitude = $('#longitude');
-
+        var latitudes = $('#latitudes');
+        var longitudes = $('#longitudes');
+        var velocities = $('#velocities');
         section_hour.style.display = 'none';
 
         const packages = {
@@ -270,7 +281,16 @@
                     }
             })
             // getCoordinatesForPrediction
-            objectResponse = JSON.parse(String(resp.value).replace('None',''))
+            if(resp.value.insufficient){
+                Swal.fire(
+                    'Datos Requeridos',
+                    'La cantidad de registros son insuficientes, cantidad de registros: '+resp.value.size,
+                    'warning'
+                )
+                return;
+            }
+            var objectResponse = JSON.parse(String(resp.value))
+            console.log(objectResponse.size)
             $("#val_prediction").val(objectResponse.prediction_for_value.toFixed(4)+"(Segundos)")
             $("#score").val(objectResponse.probability.toFixed(4))
             $("#error_margin").val((1 - objectResponse.probability).toFixed(4))
@@ -290,7 +310,7 @@
             }
             var options = {
                 fullWidth: true,
-                low: 0,
+                // low: 0,
                 showLine: true,
                 showArea: false,
                 axisY: {
@@ -350,13 +370,13 @@
             });
 
             // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
-            chart.on('created', function() {
-            if(window.__anim0987432598723) {
-                clearTimeout(window.__anim0987432598723);
-                window.__anim0987432598723 = null;
-            }
-            window.__anim0987432598723 = setTimeout(chart.update.bind(chart), 8000);
-            });
+            // chart.on('created', function() {
+            // if(window.__anim0987432598723) {
+            //     clearTimeout(window.__anim0987432598723);
+            //     window.__anim0987432598723 = null;
+            // }
+            // window.__anim0987432598723 = setTimeout(chart.update.bind(chart), 8000);
+            // });
 
         })
 
@@ -367,8 +387,20 @@
             $("#val_prediction").val("")
             $("#score").val("")
             $("#error_margin").val("")
+            $("#ct-chart1").empty()
+            var cleanChart = new Chartist.Line('.ct-chart',{
+                labels: [0,1,2,3,4,5,6,7,8,9]
+            },{
+                fullWidth: true
+            });
+            
+            cleanCoordinates()
         }
-
+        function cleanCoordinates(){
+            velocities.empty()
+            longitudes.empty()
+            latitudes.empty()
+        }
         async function getCoordinates({predictionValue}) {
             console.log(predictionValue)
             let response = await fetch('getcoordinates',{
@@ -385,7 +417,34 @@
                     return response.json()
                 }
             });
-            console.log(response.body)
+            console.log("Is existing coordinates: "+(response.body.length===0))
+            if(response.body.length === 0){
+                Swal.fire(
+                    'Coordenadas no disponibles',
+                    'No existen coordenadas con ese valor de prediccion',
+                    'info'
+                )
+                cleanCoordinates()
+                return;
+            }
+
+            let coordinates =  []
+            response.body.forEach(value => {
+                coordinates.push(value)
+            });
+
+            let valVelocities = ""
+            let valLongitudes = ""
+            let valLatitudes = ""
+            coordinates.forEach(value =>{
+                valVelocities += "<h5>"+value[0]+"</h5>";
+                valLongitudes += "<h5>"+value[1]+"</h5>";
+                valLatitudes += "<h5>"+value[2]+"</h5>"
+            })
+            cleanCoordinates()
+            velocities.append(valVelocities)
+            longitudes.append(valLongitudes)
+            latitudes.append(valLatitudes)
         }
     });
     

@@ -13,18 +13,38 @@ class PredictionController extends Controller{
     public function getprediction(Request $request){
         $ban = true;
         $rest = [];
-        $finalResponse = [];
+        $timeout = 10;
+        switch($request->type_package){
+            case 'temperature':
+                $timeout = 120;
+                break;
+            case 'distance':
+                $timeout = 20;
+                break;
+            case 'hour': 
+                $timeout = 80;
+                break;
+        }
+        error_log($request->xForPrediction);
         do{
+
             $dataSet = $this->getDataSet(
                 $request->type_package,
                 $request->start_date,
                 $request->end_date
             );
-            error_log(count($dataSet['body']));
+            // error_log($timeout);
+            if(count($dataSet['body']) === 0 || count($dataSet['body']) <= 2000){
+                return json_encode(array(
+                    "insufficient" => true,
+                    "size" => count($dataSet['body'])
+                ));
+            }
             // error_log($dataSet);
             $rest = shell_exec(
-                "timeout 10s python3 ".storage_path()."/prediction/prediction_neural_network.py '".json_encode($dataSet['body'])."' ".$request->xForPrediction. " ".$request->type_package
+                "timeout ".$timeout."s python3 ".storage_path()."/prediction/prediction_neural_network.py '".json_encode($dataSet['body'])."' ".$request->xForPrediction. " ".$request->type_package
             );
+            error_log($rest);
             if($rest != null){
                 $ban = false;
                 error_log("Done predictions");
@@ -63,6 +83,6 @@ class PredictionController extends Controller{
                     "value_prediction" => $request->predictionValue,
                 ]
             )->json();
-        return json_encode($response);
+        return $response;
     }
 }
