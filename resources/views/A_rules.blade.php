@@ -41,8 +41,7 @@
                     <h6>Preanálisis Kmeans:</h6>
                     <br>
                     <label>Número de Clusters: </label>
-                    <select id="cluster" name="cluster" required="" onchange="numero()">
-                        <option value=0>--</option>
+                    <select id="cluster" name="cluster" required="">
                         <option value=2>2</option>
                         <option value=3>3</option>
                         <option value=4>4</option>
@@ -163,12 +162,292 @@
 
     $(document).ready(function() {
 
-        $("#kmeans").click(function() {
-            var fecha = $('#fecha').val();
+        $("#ar_kmeans").click(function() {
+            var cluster = $('#cluster').val();
 
             let timerInterval
             Swal.fire({
-                title: 'Ejecutando análisis previo...',
+                title: 'Ejecutando Pre-análisis de Kmeans...',
+                html: '',
+                timer: 10000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    timerInterval = setInterval(() => {
+                        const content = Swal.getContent()
+                        if (content) {
+                            const b = content.querySelector('b')
+                            if (b) {
+                                b.textContent = Swal.getTimerLeft()
+                            }
+                        }
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('Tiempo de espera agotado, error en procesamiento')
+                }
+            })
+
+            $.ajax({
+                url: '/preanalisis',
+                data: {
+                    num_cluster: cluster
+                },
+                type: 'GET',
+
+                success: function(data) {
+                    console.log("Exito")
+                    limpiar();
+                    var gold = 0,
+                        violet = 0,
+                        blue = 0,
+                        green = 0,
+                        red = 0,
+                        yellow = 0,
+                        orange = 0,
+                        grey = 0;
+                    JSON.parse(data[0]).forEach((element, index) => {
+                        if (index > 0) {
+                            if (element[4] == "0") {
+                                var myIcon = L.icon({
+                                    iconUrl: '{{ asset("img/icons/marker-icon-gold.png") }}',
+                                    iconSize: [25, 40],
+                                    iconAnchor: [15, 40],
+                                });
+                                L.marker([element[2], element[3]], {
+                                    icon: myIcon
+                                }).addTo(map);
+                                gold++;
+                            }
+                            if (element[4] == "1") {
+                                var myIcon = L.icon({
+                                    iconUrl: '{{ asset("img/icons/marker-icon-violet.png") }}',
+                                    iconSize: [25, 40],
+                                    iconAnchor: [15, 40],
+                                });
+                                L.marker([element[2], element[3]], {
+                                    icon: myIcon
+                                }).addTo(map);
+                                violet++;
+                            }
+                            if (element[4] == "2") {
+                                var myIcon = L.icon({
+                                    iconUrl: '{{ asset("img/icons/marker-icon-blue.png") }}',
+                                    iconSize: [25, 40],
+                                    iconAnchor: [15, 40],
+                                });
+                                L.marker([element[2], element[3]], {
+                                    icon: myIcon
+                                }).addTo(map);
+                                blue++;
+                            }
+                            if (element[4] == "3") {
+                                var myIcon = L.icon({
+                                    iconUrl: '{{ asset("img/icons/marker-icon-green.png") }}',
+                                    iconSize: [25, 40],
+                                    iconAnchor: [15, 40],
+                                });
+                                L.marker([element[2], element[3]], {
+                                    icon: myIcon
+                                }).addTo(map);
+                                green++;
+                            }
+                            if (element[4] == "4") {
+                                var myIcon = L.icon({
+                                    iconUrl: '{{ asset("img/icons/marker-icon-red.png") }}',
+                                    iconSize: [25, 40],
+                                    iconAnchor: [15, 40],
+                                });
+                                L.marker([element[2], element[3]], {
+                                    icon: myIcon
+                                }).addTo(map);
+                                red++;
+                            }
+                            if (element[4] == "5") {
+                                var myIcon = L.icon({
+                                    iconUrl: '{{ asset("img/icons/marker-icon-yellow.png") }}',
+                                    iconSize: [25, 40],
+                                    iconAnchor: [15, 40],
+                                });
+                                L.marker([element[2], element[3]], {
+                                    icon: myIcon
+                                }).addTo(map);
+                                yellow++;
+                            }
+                            if (element[4] == "6") {
+                                var myIcon = L.icon({
+                                    iconUrl: '{{ asset("img/icons/marker-icon-orange.png") }}',
+                                    iconSize: [25, 40],
+                                    iconAnchor: [15, 40],
+                                });
+                                L.marker([element[2], element[3]], {
+                                    icon: myIcon
+                                }).addTo(map);
+                                orange++;
+                            }
+                            if (element[4] == "7") {
+                                var myIcon = L.icon({
+                                    iconUrl: '{{ asset("img/icons/marker-icon-grey.png") }}',
+                                    iconSize: [25, 40],
+                                    iconAnchor: [15, 40],
+                                });
+                                L.marker([element[2], element[3]], {
+                                    icon: myIcon
+                                }).addTo(map);
+                                grey++;
+                            }
+                        }
+                    });
+
+                    JSON.parse(data[1]).forEach((element, index) => {
+                        if (element[0] == "0") {
+                            var myIcon = L.icon({
+                                iconUrl: '{{ asset("img/icons/centroide_gold.png") }}',
+                                iconSize: [50, 50],
+                                iconAnchor: [15, 40],
+                            });
+                            var marker = L.marker([element[1], element[2]], {
+                                icon: myIcon
+                            }).addTo(map);
+                            marker.bindPopup("Numero de puntos: " + gold).openPopup();
+                        }
+                        if (element[0] == "1") {
+                            var myIcon = L.icon({
+                                iconUrl: '{{ asset("img/icons/centroide_purpura.png") }}',
+                                iconSize: [50, 50],
+                                iconAnchor: [15, 40],
+                            });
+                            var marker = L.marker([element[1], element[2]], {
+                                icon: myIcon
+                            }).addTo(map);
+                            marker.bindPopup("Numero de puntos: " + violet).openPopup();
+
+                        }
+                        if (element[0] == "2") {
+                            var myIcon = L.icon({
+                                iconUrl: '{{ asset("img/icons/centroide_azul.png") }}',
+                                iconSize: [50, 50],
+                                iconAnchor: [15, 40],
+                            });
+                            var marker = L.marker([element[1], element[2]], {
+                                icon: myIcon
+                            }).addTo(map);
+                            marker.bindPopup("Numero de puntos: " + blue).openPopup();
+                        }
+                        if (element[0] == "3") {
+                            var myIcon = L.icon({
+                                iconUrl: '{{ asset("img/icons/centroide_verde.png") }}',
+                                iconSize: [50, 50],
+                                iconAnchor: [15, 40],
+                            });
+                            var marker = L.marker([element[1], element[2]], {
+                                icon: myIcon
+                            }).addTo(map);
+                            marker.bindPopup("Numero de puntos: " + green).openPopup();
+                        }
+                        if (element[0] == "4") {
+                            var myIcon = L.icon({
+                                iconUrl: '{{ asset("img/icons/centroide_rojo.png") }}',
+                                iconSize: [50, 50],
+                                iconAnchor: [15, 40],
+                            });
+                            var marker = L.marker([element[1], element[2]], {
+                                icon: myIcon
+                            }).addTo(map);
+                            marker.bindPopup("Numero de puntos: " + red).openPopup();
+                        }
+                        if (element[0] == "5") {
+                            var myIcon = L.icon({
+                                iconUrl: '{{ asset("img/icons/centroide_amarillo.png") }}',
+                                iconSize: [50, 50],
+                                iconAnchor: [15, 40],
+                            });
+                            var marker = L.marker([element[1], element[2]], {
+                                icon: myIcon
+                            }).addTo(map);
+                            marker.bindPopup("Numero de puntos: " + yellow).openPopup();
+                        }
+                        if (element[0] == "6") {
+                            var myIcon = L.icon({
+                                iconUrl: '{{ asset("img/icons/centroide_naranja.png") }}',
+                                iconSize: [50, 50],
+                                iconAnchor: [15, 40],
+                            });
+                            var marker = L.marker([element[1], element[2]], {
+                                icon: myIcon
+                            }).addTo(map);
+                            marker.bindPopup("Numero de puntos: " + orange).openPopup();
+                        }
+                        if (element[0] == "7") {
+                            var myIcon = L.icon({
+                                iconUrl: '{{ asset("img/icons/centroide.png") }}',
+                                iconSize: [50, 50],
+                                iconAnchor: [15, 40],
+                            });
+                            var marker = L.marker([element[1], element[2]], {
+                                icon: myIcon
+                            }).addTo(map);
+                            marker.bindPopup("Numero de puntos: " + grey).openPopup();
+                        }
+                    });
+                    var texto="";
+                    var array1 =[violet, blue, green, red, yellow, orange, grey];
+                    var array2=["violeta", "azul", "verde", "rojo", "amarillo", "naranja", "gris"];
+                    for(var i=0 ; i < array1.length ; i++){
+                        for(var j=0 ; j < array2.length ; j++){
+                            if(array1[i]>0 && i==j){
+                                texto= texto + ", en el " + array2[i] + " " + array1[i];
+                                console.log(", " + array1[i] +" " + array2[i]);
+                            }
+                        }
+                    }
+                    if(gold!=0){
+                    document.getElementById("image").src = "/img/kmeans/poo.png?" + Math.random();
+
+                    var total = gold + violet + blue + green + red + yellow + orange + grey;
+
+                    document.getElementById("texto").innerHTML = "K-means Es un algoritmo de aprendizaje no supervisado que se especializa en agrupar los datos" +
+                        " según sus características el cual permite mostrar mediante este gráfico las respectivas agrupaciones identificadas por distintos colores, teniendo en cuenta el número de centroides ingresados.";
+
+                    document.getElementById("desc").innerHTML = "Sobre el mapa se puede observar un total de " + total + " puntos" +
+                        " georreferenciales. Al haber ingresado " + centroide + " centroides los puntos se agrupan al más cercano, dando como resultado que en el centroide de color dorado se encuentan alojados " + gold +" puntos"+texto
+                        + ". Recalcando que esta información puede ser utilizada indistintamente del requerimiento del usuario.";
+                    }
+
+                },
+                error: function() {
+                    if (soporte == null || soporte == 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'No se ha definido el número de clusters',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Parece que hubo un error! XJ',
+                        });
+                    }
+
+                }
+            });
+        });
+
+        $("#ar_apiori").click(function() {
+            var support = $('#soporte').val();
+            var confidence = $('#confianza').val();
+            var lift = $('#lift').val();
+            
+
+            let timerInterval
+            Swal.fire({
+                title: 'Ejecutando Pre-análisis de Kmeans...',
                 html: '',
                 timer: 10000,
                 timerProgressBar: true,
@@ -195,7 +474,7 @@
             })
 
             $.ajax({
-                url: '/algoritmo',
+                url: '/algoritmo/a_rules',
                 data: {
                     num_cluster: centroide,
                     fecha: fecha,

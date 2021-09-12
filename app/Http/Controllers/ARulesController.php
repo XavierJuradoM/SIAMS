@@ -18,7 +18,6 @@ class ARulesController extends Controller
         $startDate = $request->startDate;
         $endDate = $request->endDate;
         $maxAmount = $request->maxAmount;
-        //$support = $request->support;
         Storage::deleteDirectory('/archivos_apriori');
         Storage::makeDirectory('/archivos_apriori');
 
@@ -29,8 +28,6 @@ class ARulesController extends Controller
 
         $query = DB::table('inf_trayectorias_det')
         ->select(DB::raw('id_det_tra, id_trayectoria, orden, fecha, longitud, latitud, distancia, duracion, velocidad, coordenadas, tipo_coordenada'))
-        //->select(DB::raw('CONCAT((cast(longitud as varchar), cast(latitud as varchar))) as coordenadas'), DB::raw('cast(id_trayectoria as varchar)'))
-        // , to_char(fecha, 'DDMMYYYYHH24') as Fecha_24H
         ->whereBetween('inf_trayectorias_det.fecha', [$startDate, $endDate])
         ->inRandomOrder()->limit($maxAmount)
         ->get()->toArray();
@@ -71,12 +68,26 @@ class ARulesController extends Controller
         return [json_encode($puntos)];
     }
 
+    public function preanalisis(Request $request)
+    {
+        #$algorith = storage_path() . '/a_rules/preanalisis.py';
+        $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
+        $csv = $path . '/coordenadas-120921_20_09_28.csv ';
+        #$csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
+        $cluster = $request->num_cluster;
+        $salida = shell_exec('python3 '. env('AR_KMEANS') .' '. $csv . ' ' . $cluster);
+        echo 'python3 '. env('AR_KMEANS') .' '.  $csv . ' ' . $cluster;
+
+    }
     public function algoritmo(Request $request)
     {
         $algorith = storage_path() . '/eclat/algoritmo.R';
         $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
         $csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
         $graphic = $path . '/graphic.png ';
+        $support = $request->support;
+        $confidence = $request->confidence;
+        $lift = $request->lift;
         $scatterplot = $path . '/scatterplot.png';
         fclose($fp);
         shell_exec('Rscript '. $algorith  .' '. $file . ' ' . $support . ' ' . $csv. ' ' . $graphic . ' ' . $scatterplot);

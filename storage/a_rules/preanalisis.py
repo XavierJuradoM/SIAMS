@@ -1,3 +1,7 @@
+#OS LIBRARIES
+import csv
+import sys
+import os
 # Numerical libraries
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -6,13 +10,20 @@ from sklearn.cluster import KMeans
 import pandas as pd
 # importing ploting libraries
 from matplotlib import pyplot as plt
-%matplotlib inline
+#%matplotlib inline
 #importing seaborn for statistical plots
 import seaborn as sns
 from sklearn import metrics
-file_url = 'C:/Users/jtorres/Documents/GitHub/SIAMS/storage/archivos_apriori/coordenadas-100921_01_09_21.csv'
-data = pd.read_csv(file_url)
-n_cltrs=4
+
+
+arch_inicial= sys.argv[1]
+cluster=sys.argv[2]
+
+
+#file_url = 'C:/Users/jtorres/Documents/GitHub/SIAMS/storage/archivos_apriori/coordenadas-100921_01_09_21.csv'
+#data = pd.read_csv(file_url)
+data = pd.read_csv(arch_inicial)
+n_cltrs=cluster
 data.info()
 data.describe()
 features = data[['latitud', 'longitud']]
