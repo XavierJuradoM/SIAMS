@@ -18,7 +18,7 @@ class ARulesController extends Controller
         $startDate = $request->startDate;
         $endDate = $request->endDate;
         $maxAmount = $request->maxAmount;
-        $support = $request->support;
+        //$support = $request->support;
         Storage::deleteDirectory('/archivos_apriori');
         Storage::makeDirectory('/archivos_apriori');
 
@@ -63,6 +63,16 @@ class ARulesController extends Controller
         foreach ($matrix as $campos) {
             fputcsv($fp, $campos);
         }
+
+        $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
+        $csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
+        fclose($fp);
+        $puntos = array_slice($matrix, 1); 
+        return [json_encode($puntos)];
+    }
+
+    public function algoritmo(Request $request)
+    {
         $algorith = storage_path() . '/eclat/algoritmo.R';
         $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
         $csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
@@ -96,11 +106,8 @@ class ARulesController extends Controller
 
              fclose($handle);
 
+             return [json_encode($response)];
 
-        return [json_encode($response)];
     }
-
-
-
 
 }

@@ -30,7 +30,7 @@
                     <br>
                     <label>Cantidad de Registros: </label>
                     <select id="nregistro" name="nregistro" required="">
-                        <option value=0>--</option>
+                        <option value=10>10</option>
                         <option value=1000>1000</option>
                         <option value=10000>10000</option>
                         <option value=20000>20000</option>
@@ -478,7 +478,7 @@
             var startDate = $('#fecha_inicio').val();
             var endDate = $('#fecha_fin').val();
             var maxAmount = $('#nregistro').val();
-            var support = $('#soporte').val();
+            //var support = $('#soporte').val();
 
             document.getElementById("graphic").src = '{{ asset("img/kmeans/blanco.png") }}';
             document.getElementById("plot").src = '{{ asset("img/kmeans/blanco.png") }}';
@@ -502,7 +502,7 @@
 
             console.log(startDate);
             console.log(endDate);
-            console.log(support);
+            //console.log(support);
             console.log(maxAmount);
             let timerInterval
             Swal.fire({
@@ -539,33 +539,23 @@
                     startDate: startDate,
                     endDate: endDate,
                     maxAmount: maxAmount,
-                    support: support
+                    //support: support
                 },
                 type: 'GET',
                 success: function(json) {
-
-
                     var cont = 0;
-                    console.log(typeof(JSON.parse(json)))
+                    console.log(typeof(JSON.parse(json)))                    
                     JSON.parse(json).forEach(element => {
-                        console.log(element)
+                       console.log(element)
                         var myIcon = L.icon({
-                            iconUrl: '{{ asset("img/marcador-de-posicion.png") }}',
-                            iconSize: [60, 60],
-                            iconAnchor: [30, 57],
+                            iconUrl: '{{ asset("img/icons/marker-icon-blue.png") }}',
+                            iconSize: [30, 30],
+                            iconAnchor: [10, 57],
                             popupAnchor: [-3, -76],
                         });
-
-
-
-                        L.marker([element.latitud, element.longitud], {icon: myIcon}).addTo(map);
-
-
+                        L.marker([element[5], element[4]], {icon: myIcon}).addTo(map);
                         cont++;
-
-
-
-                    });
+                    });                    
                     if (cont == 0) {
                         Swal.fire(
                             'No se encontraron puntos')
@@ -575,11 +565,6 @@
                             'Se encontraron ' + cont + ' puntos',
                             'success'
                         )
-
-                        document.getElementById("graphic").src = "graph.png?" + new Date().getTime();
-                        document.getElementById("plot").src = "scatterplot.png?" + new Date().getTime();
-                        document.getElementById("textographic").innerHTML="Red de reglas";
-                        document.getElementById("textoplot").innerHTML="Matriz de reglas";
                     }
 
 
