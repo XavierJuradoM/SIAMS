@@ -28,24 +28,35 @@ class ARulesController extends Controller
         $startDate = $startDate . ':00';
 
         $query = DB::table('inf_trayectorias_det')
-        ->select(DB::raw('CONCAT((cast(longitud as varchar), cast(latitud as varchar))) as coordenadas'), DB::raw('cast(id_trayectoria as varchar)'))
+        ->select(DB::raw('id_det_tra, id_trayectoria, orden, fecha, longitud, latitud, distancia, duracion, velocidad, coordenadas, tipo_coordenada'))
+        //->select(DB::raw('CONCAT((cast(longitud as varchar), cast(latitud as varchar))) as coordenadas'), DB::raw('cast(id_trayectoria as varchar)'))
+        // , to_char(fecha, 'DDMMYYYYHH24') as Fecha_24H
         ->whereBetween('inf_trayectorias_det.fecha', [$startDate, $endDate])
         ->inRandomOrder()->limit($maxAmount)
         ->get()->toArray();
 
-        $matrix  = [['coordenadas', 'id_trayectoria']];
+        $matrix  = [['id_det_tra', 'id_trayectoria', 'orden', 'fecha', 'longitud', 'latitud', 'distancia', 'duracion', 'velocidad', 'coordenadas', 'tipo_coordenada']];
         foreach ($query as $value) {
             //var_dump($value->latitud);
             array_push($matrix, [
+                $value->id_det_tra,
+                $value->id_trayectoria,
+                $value->orden,
+                $value->fecha,
+                $value->longitud,
+                $value->latitud,
+                $value->distancia,
+                $value->duracion,
+                $value->velocidad,
                 $value->coordenadas,
-                $value->id_trayectoria
+                $value->tipo_coordenada
             ]);
         }
 
-        $fecha_csv = date("H:i:s");
+        $fecha_csv = date("dmy_H:m:s");
         $fecha_csv = str_replace(':', '_', $fecha_csv);
 
-        $file = str_replace('\\', '/', storage_path()) . '/archivos_apriori/datainicial' . $fecha_csv . '.csv';
+        $file = str_replace('\\', '/', storage_path()) . '/archivos_apriori/coordenadas-' . $fecha_csv . '.csv';
         $fp = fopen($file, 'w');
 
 
@@ -54,7 +65,7 @@ class ARulesController extends Controller
         }
         $algorith = storage_path() . '/eclat/algoritmo.R';
         $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
-        $csv = $path . '/datainicial' . $fecha_csv . '.csv ';
+        $csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
         $graphic = $path . '/graphic.png ';
         $scatterplot = $path . '/scatterplot.png';
         fclose($fp);

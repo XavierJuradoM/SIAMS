@@ -18,7 +18,7 @@
                 <div>
                
                     <label for="filtro">Base de Datos SIAMS:</label>
-                    <br>
+                    <br><br>
                     <label for="filtro">Fecha Inicio:</label>
                     <br>
                     <input id="fecha_inicio" name="fecha_inicio" type="datetime-local" required="">
@@ -28,51 +28,71 @@
                     <input id="fecha_fin" name="fecha_fin" type="datetime-local" required="">
                     <br><br>
                     <br>
-                    <label>Cantidad de Registro: </label>
+                    <label>Cantidad de Registros: </label>
                     <select id="nregistro" name="nregistro" required="">
                         <option value=0>--</option>
-                        <!-- <option value=0.0065>1000</option>
-                        <option value=0.055>10000</option>
-                        <option value=0.110>20000</option> -->
                         <option value=1000>1000</option>
                         <option value=10000>10000</option>
                         <option value=20000>20000</option>
                     </select><br><br>
+                   <input id="consulta" type="button" value="Consultar">
+                    <br>
                     <hr>
-                    <h6>Parámetros:</h6>
+                    <h6>Preanálisis Kmeans:</h6>
+                    <br>
+                    <label>Número de Clusters: </label>
+                    <select id="cluster" name="cluster" required="" onchange="numero()">
+                        <option value=0>--</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                        <option value=4>4</option>
+                        <option value=5>5</option>
+                        <option value=6>6</option>
+                        <option value=7>7</option>
+                        <option value=8>8</option>
+                        <option value=9>9</option>
+                        <option value=10>10</option>
+                    </select><br><br>
+                    <input id="ar_kmeans" type="button" value="Ejecutar kmeans">
+                    <hr>
+                    <h6>Parámetros Apriori:</h6>
+                    <br>
                     <label>Nivel de soporte min: </label>
                     <select id="soporte" name="soporte" required="">
                         <option value=0>--</option>
-                        <option value=0.006>0.006</option>
+                        <option value=0.001>0.001</option>
+                        <option value=0.003>0.003</option>
+                        <option value=0.005>0.005</option>
                         <option value=0.007>0.007</option>
-                        <option value=0.008>0.008</option>
+                        <option value=0.009>0.009</option>
+                        <option value=0.012>0.012</option>
                     </select><br><br>
                     <label>Nivel mínimo de confianza: </label>
                     <select id="confianza" name="confianza" required="">
                         <option value=0>--</option>
-                        <option value=0.006>0.006</option>
-                        <option value=0.007>0.007</option>
-                        <option value=0.008>0.008</option>
+                        <option value=0.01>0.01</option>
+                        <option value=0.02>0.02</option>
+                        <option value=0.03>0.03</option>
+                        <option value=0.04>0.04</option>
+                        <option value=0.05>0.05</option>
+                        <option value=0.06>0.06</option>
+                        <option value=0.07>0.07</option>
+                        <option value=0.08>0.08</option>
+                        <option value=0.09>0.09</option>
                     </select><br><br>
                     <label>Lift Minimo: </label>
                     <select id="lift" name="lift" required="">
                         <option value=0>--</option>
-                        <option value=0.006>0.006</option>
-                        <option value=0.007>0.007</option>
-                        <option value=0.008>0.008</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                        <option value=4>4</option>
+                        <option value=5>5</option>
                     </select><br><br>
+                    <input id="ar_apiori" type="button" value="Ejecutar Apriori">
                     <hr>
-                    <label>Cantidad de Registro: </label>
-                    <select id="nregistro" name="nregistro" required="">
-                        <option value=0>--</option>
-                        <!-- <option value=0.0065>1000</option>
-                        <option value=0.055>10000</option>
-                        <option value=0.110>20000</option> -->
-                        <option value=1000>1000</option>
-                        <option value=10000>10000</option>
-                        <option value=20000>20000</option>
-                    </select><br><br>
-                    <input id="consulta" type="button" value="Consultar">
+                    <br><br>
+                    
                 </div>
     
             </div>
@@ -148,7 +168,7 @@
 
             let timerInterval
             Swal.fire({
-                title: 'Aplicando algoritmo kmeans',
+                title: 'Ejecutando análisis previo...',
                 html: '',
                 timer: 10000,
                 timerProgressBar: true,
@@ -508,7 +528,7 @@
             }).then((result) => {
                 /* Read more about handling dismissals below */
                 if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log('I was closed by the timer')
+                    console.log('Tiempo de espera agotado...')
                 }
             })
 
@@ -571,7 +591,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'Parece que hubo un error! 2',
+                        text: 'Parece que hubo un error!',
                     });
                     alert(xhr.status);
                     alert(thrownError);
