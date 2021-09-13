@@ -9,21 +9,26 @@ from sklearn.cluster import KMeans
 # to handle data in form of rows and columns 
 import pandas as pd
 # importing ploting libraries
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+import folium
 #%matplotlib inline
 #importing seaborn for statistical plots
 import seaborn as sns
 from sklearn import metrics
 
-
+#FILES
+strFile = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png"
+strFile1 = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png"
+strFile2 = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png"
+#ENTRADAS
 arch_inicial= sys.argv[1]
 cluster=sys.argv[2]
-
-
-#file_url = 'C:/Users/jtorres/Documents/GitHub/SIAMS/storage/archivos_apriori/coordenadas-100921_01_09_21.csv'
+#file_url = 'C:/Users/jtorres/Documents/GitHub/SIAMS/storage/archivos_apriori/coordenadas-120921_21_09_38.csv'
 #data = pd.read_csv(file_url)
 data = pd.read_csv(arch_inicial)
-n_cltrs=cluster
+n_cltrs=int(cluster)
+#n_cltrs=4
 data.info()
 data.describe()
 features = data[['latitud', 'longitud']]
@@ -37,12 +42,11 @@ plt.plot(range(1, n_cltrs+2,1), wcss,marker='*')
 plt.title("Codo de Jambú")
 plt.xlabel('Número de clusters')
 plt.ylabel('WCSS')
-plt.show()
-plt.plot(range(1, n_cltrs+2,1), wcss,marker='*')
-plt.title("Codo de Jambú")
-plt.xlabel('Número de clusters')
-plt.ylabel('WCSS')
-plt.show()
+strFile = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png"
+if os.path.isfile(strFile):
+   os.remove(strFile)
+plt.savefig('C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png')
+#plt.show()
 # — — — — — — — — — — — — — — — -Heat map to identify highly correlated variables — — — — — — — — — — — — -
 #-------------------------------Heat map to identify highly correlated variables-------------------------
 plt.figure(figsize=(10,8))
@@ -52,7 +56,11 @@ sns.heatmap(features.corr(),
             center=0,
             cbar=False,
             cmap="YlGnBu")
-plt.show()
+strFile1 = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png"
+if os.path.isfile(strFile1):
+   os.remove(strFile1)
+plt.savefig('C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png')
+#plt.show()
 mydata = data
 mydata.drop(columns = {'id_det_tra','id_trayectoria','orden','longitud','latitud','fecha','coordenadas','tipo_coordenada'}, inplace=True)
 data = features
@@ -111,15 +119,31 @@ colors = ['red', 'blue', 'green', 'purple', 'orange', 'darkred', \
      'orange', 'darkred', 'lightred', 'beige', 'darkblue', \
      'darkgreen', 'cadetblue', 'darkpurple','pink', 'lightblue', \
      'lightgreen', 'gray', 'black', 'lightgray' ]
-fig = plt.figure(figsize=(6,6))
+
+
+
+
+fig = plt.figure(figsize=(7,5))
 ax = fig.add_subplot(1,1,1)
 ax.set_xlabel('Latitud', fontsize = 15)
 ax.set_ylabel('Longitud', fontsize = 15)
 ax.set_title('SIAMS UG', fontsize = 20)
 color_theme = np.array(colors)
 ax.scatter(df['latitud'],df['longitud'], c=color_theme[df.cluster], s =50)
+strFile2 = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png"
+if os.path.isfile(strFile2):
+   os.remove(strFile2)
+plt.savefig('C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png')
 plt.show()
-import folium
+
+
+
+wcss = []
+for i in range(1, n_cltrs+2):
+    kmeans = KMeans(n_clusters = i, max_iter = 300)
+    kmeans.fit(features)
+    wcss.append(kmeans.inertia_)
+
 lat = data.iloc[0]['latitud']
 lng = data.iloc[0]['longitud']
 map = folium.Map(location=[lng, lat], zoom_start=12)

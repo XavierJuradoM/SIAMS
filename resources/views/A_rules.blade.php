@@ -103,20 +103,26 @@
                 <br>
                 <div class="col-md-6 col-sm-6 ">
                     <div>
-                        <h6 id="textographic" style="text-align: justify;"></h6>
+                        <h6 id="Title_grafic1" style="text-align: center;"></h6>
                     </div>
                     <div id="image">
-                        <img id="graphic" width="400" height="400" src="{{ asset('img/kmeans/blanco.png')}}">
+                        <img id="graphic" width="400" height="400" src="{{ asset('img/img_arules/blanco.png')}}">
+                    </div>
+                    <div>
+                        <h7 id="textographic" style="text-align: justify;"></h7>
                     </div>
                     <br>
                 </div>
 
                 <div class="col-md-6 col-sm-6 ">
                     <div>
-                        <h6 id="textoplot" style="text-align: justify;"></h6>
+                        <h6 id="Title_grafic2" style="text-align: center;"></h6>
                     </div>
                     <div id="image">
-                        <img id="plot" width="400" height="400" src="{{ asset('img/kmeans/blanco.png')}}">
+                        <img id="plot" width="400" height="400" src="{{ asset('img/img_arules/blanco.png')}}">
+                    </div>
+                    <div>
+                        <h7 id="textoplot" style="text-align: justify;"></h7>
                     </div>
                     <br>
                 </div>
@@ -164,7 +170,11 @@
 
         $("#ar_kmeans").click(function() {
             var cluster = $('#cluster').val();
-
+            var Time_File = localStorage.getItem('Time_File');
+            if (Time_File == null || Time_File == "null") {
+                console.log("ENTRO AL ERROR")
+                return;
+                }
             let timerInterval
             Swal.fire({
                 title: 'Ejecutando Pre-análisis de Kmeans...',
@@ -196,229 +206,22 @@
             $.ajax({
                 url: '/preanalisis',
                 data: {
-                    num_cluster: cluster
+                    num_cluster: cluster,
+                    fecha_env: Time_File
                 },
                 type: 'GET',
 
                 success: function(data) {
                     console.log("Exito")
-                    limpiar();
-                    var gold = 0,
-                        violet = 0,
-                        blue = 0,
-                        green = 0,
-                        red = 0,
-                        yellow = 0,
-                        orange = 0,
-                        grey = 0;
-                    JSON.parse(data[0]).forEach((element, index) => {
-                        if (index > 0) {
-                            if (element[4] == "0") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-gold.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                gold++;
-                            }
-                            if (element[4] == "1") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-violet.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                violet++;
-                            }
-                            if (element[4] == "2") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-blue.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                blue++;
-                            }
-                            if (element[4] == "3") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-green.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                green++;
-                            }
-                            if (element[4] == "4") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-red.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                red++;
-                            }
-                            if (element[4] == "5") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-yellow.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                yellow++;
-                            }
-                            if (element[4] == "6") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-orange.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                orange++;
-                            }
-                            if (element[4] == "7") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-grey.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                grey++;
-                            }
-                        }
-                    });
-
-                    JSON.parse(data[1]).forEach((element, index) => {
-                        if (element[0] == "0") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_gold.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + gold).openPopup();
-                        }
-                        if (element[0] == "1") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_purpura.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + violet).openPopup();
-
-                        }
-                        if (element[0] == "2") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_azul.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + blue).openPopup();
-                        }
-                        if (element[0] == "3") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_verde.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + green).openPopup();
-                        }
-                        if (element[0] == "4") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_rojo.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + red).openPopup();
-                        }
-                        if (element[0] == "5") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_amarillo.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + yellow).openPopup();
-                        }
-                        if (element[0] == "6") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_naranja.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + orange).openPopup();
-                        }
-                        if (element[0] == "7") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + grey).openPopup();
-                        }
-                    });
-                    var texto="";
-                    var array1 =[violet, blue, green, red, yellow, orange, grey];
-                    var array2=["violeta", "azul", "verde", "rojo", "amarillo", "naranja", "gris"];
-                    for(var i=0 ; i < array1.length ; i++){
-                        for(var j=0 ; j < array2.length ; j++){
-                            if(array1[i]>0 && i==j){
-                                texto= texto + ", en el " + array2[i] + " " + array1[i];
-                                console.log(", " + array1[i] +" " + array2[i]);
-                            }
-                        }
-                    }
-                    if(gold!=0){
-                    document.getElementById("image").src = "/img/kmeans/poo.png?" + Math.random();
-
-                    var total = gold + violet + blue + green + red + yellow + orange + grey;
-
-                    document.getElementById("texto").innerHTML = "K-means Es un algoritmo de aprendizaje no supervisado que se especializa en agrupar los datos" +
-                        " según sus características el cual permite mostrar mediante este gráfico las respectivas agrupaciones identificadas por distintos colores, teniendo en cuenta el número de centroides ingresados.";
-
-                    document.getElementById("desc").innerHTML = "Sobre el mapa se puede observar un total de " + total + " puntos" +
-                        " georreferenciales. Al haber ingresado " + centroide + " centroides los puntos se agrupan al más cercano, dando como resultado que en el centroide de color dorado se encuentan alojados " + gold +" puntos"+texto
-                        + ". Recalcando que esta información puede ser utilizada indistintamente del requerimiento del usuario.";
-                    }
-
+                    //Gráfica 1
+                    document.getElementById("Title_grafic1").innerHTML = "Gráfica del Codo de Jambú.";
+                    document.getElementById("graphic").src = "/img/img_arules/codo_jambu.png?";
+                    document.getElementById("textographic").innerHTML = "Minimización de la varianza intra-cluster y la maximización de la varianza inter-cluster";
+                    //Gráfica 2
+                    document.getElementById("Title_grafic2").innerHTML = "Distribución de datos";
+                    document.getElementById("plot").src = "/img/img_arules/distribucion.png?";
+                    document.getElementById("textoplot").innerHTML = "En relación a los " + cluster +" clusters deseados, se muestra como se distribuyen los puntos en un plano cartesiano";
+                    //Gráfica 3
                 },
                 error: function() {
                     if (soporte == null || soporte == 0) {
@@ -756,13 +559,12 @@
         $("#consulta").click(function() {
             var startDate = $('#fecha_inicio').val();
             var endDate = $('#fecha_fin').val();
-            var maxAmount = $('#nregistro').val();
-            //var support = $('#soporte').val();
-
-            document.getElementById("graphic").src = '{{ asset("img/kmeans/blanco.png") }}';
-            document.getElementById("plot").src = '{{ asset("img/kmeans/blanco.png") }}';
-            document.getElementById("textographic").innerHTML="";
-            document.getElementById("textoplot").innerHTML="";
+            var maxAmount = $('#nregistro').val();            
+            limpiar();
+            //document.getElementById("graphic").src = '{{ asset("img/kmeans/blanco.png") }}';
+            //document.getElementById("plot").src = '{{ asset("img/kmeans/blanco.png") }}';
+            //document.getElementById("textographic").innerHTML="";
+            //document.getElementById("textoplot").innerHTML="";
 
 
             map.eachLayer(function(layer) {
@@ -817,14 +619,16 @@
                 data: {
                     startDate: startDate,
                     endDate: endDate,
-                    maxAmount: maxAmount,
-                    //support: support
+                    maxAmount: maxAmount
                 },
                 type: 'GET',
                 success: function(json) {
                     var cont = 0;
-                    console.log(typeof(JSON.parse(json)))                    
-                    JSON.parse(json).forEach(element => {
+                    console.log(JSON.parse(json))
+                    json = JSON.parse(json)
+                    console.log(json.fecha_csv)
+                    localStorage.setItem('Time_File', json.fecha_csv);
+                    json.puntos.forEach(element => {
                        console.log(element)
                         var myIcon = L.icon({
                             iconUrl: '{{ asset("img/icons/marker-icon-blue.png") }}',
@@ -845,11 +649,6 @@
                             'success'
                         )
                     }
-
-
-
-
-
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
                     Swal.fire({

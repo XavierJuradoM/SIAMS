@@ -13,7 +13,6 @@ class ARulesController extends Controller
     {
         return view('A_rules');
     }
-
     public function puntos(Request $request){
         $startDate = $request->startDate;
         $endDate = $request->endDate;
@@ -30,8 +29,7 @@ class ARulesController extends Controller
         ->select(DB::raw('id_det_tra, id_trayectoria, orden, fecha, longitud, latitud, distancia, duracion, velocidad, coordenadas, tipo_coordenada'))
         ->whereBetween('inf_trayectorias_det.fecha', [$startDate, $endDate])
         ->inRandomOrder()->limit($maxAmount)
-        ->get()->toArray();
-
+        ->get()->toArray();    
         $matrix  = [['id_det_tra', 'id_trayectoria', 'orden', 'fecha', 'longitud', 'latitud', 'distancia', 'duracion', 'velocidad', 'coordenadas', 'tipo_coordenada']];
         foreach ($query as $value) {
             //var_dump($value->latitud);
@@ -49,14 +47,10 @@ class ARulesController extends Controller
                 $value->tipo_coordenada
             ]);
         }
-
         $fecha_csv = date("dmy_H:m:s");
         $fecha_csv = str_replace(':', '_', $fecha_csv);
-
         $file = str_replace('\\', '/', storage_path()) . '/archivos_apriori/coordenadas-' . $fecha_csv . '.csv';
         $fp = fopen($file, 'w');
-
-
         foreach ($matrix as $campos) {
             fputcsv($fp, $campos);
         }
@@ -64,20 +58,27 @@ class ARulesController extends Controller
         $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
         $csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
         fclose($fp);
-        $puntos = array_slice($matrix, 1); 
-        return [json_encode($puntos)];
+        $puntos = array_slice($matrix, 1);
+
+        // return [json_encode($puntos)];    
+        return json_encode(array(
+            "puntos" => $puntos,
+            "fecha_csv" => $fecha_csv
+        ));
     }
 
     public function preanalisis(Request $request)
     {
         #$algorith = storage_path() . '/a_rules/preanalisis.py';
+        $fecha = $request->fecha_env;
         $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
-        $csv = $path . '/coordenadas-120921_20_09_28.csv ';
-        #$csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
+        #$csv = $path . '/coordenadas-130921_00_09_02.csv ';
+        $csv = $path . '/coordenadas-' . $fecha . '.csv ';
         $cluster = $request->num_cluster;
-        $salida = shell_exec('python3 '. env('AR_KMEANS') .' '. $csv . ' ' . $cluster);
-        echo 'python3 '. env('AR_KMEANS') .' '.  $csv . ' ' . $cluster;
-
+        $salida = shell_exec('python '. env('AR_KMEANS') .' '. $csv . ' ' . $cluster);
+        json_encode($salida);
+        echo 'python '. env('AR_KMEANS') .' '.  $csv . ' ' . $cluster;
+        //return [json_encode($salida)];//, json_encode($centroides)];
     }
     public function algoritmo(Request $request)
     {
