@@ -78,7 +78,7 @@
                             </div>
                             <br>
                             <div class="from-group row">
-                                <label class="col-sm-4 col-form-labe" for=""><h6>Porbabilidad: </h6></label>
+                                <label class="col-sm-4 col-form-labe" for=""><h6>Probabilidad: </h6></label>
                                 <div class="col-sm-8">
                                     <input class="form-control" type="text" id="score" disabled>
                                 </div>
