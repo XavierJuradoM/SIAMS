@@ -62,7 +62,7 @@ class PredictionController extends Controller{
     }
     public function getDataSet($type_package, $start_date, $end_date){
         $url = env('URL_LAMBDA_PREDICTION');
-        error_log($type_package);
+        
         return Http::acceptJson()
             ->post(
                 $url,
