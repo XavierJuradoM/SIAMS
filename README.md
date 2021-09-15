@@ -95,3 +95,12 @@ Remover el ';'
     3. sudo -i R
     4. install.packages("arules")
     5. install.packages("arulesViz")
+
+## Instalación de Librerías
+py -m pip install numpy
+py -m pip install pandas
+py -m pip install matplotlib
+py -m pip install seaborn
+py -m pip install folium
+
+

@@ -6,6 +6,9 @@
     #map {
         height: 450px;
     }
+    #map2 {
+        height: 450px;
+    }
 </style>
 @endsection
 @section('content')
@@ -58,7 +61,6 @@
                     <br>
                     <label>Nivel de soporte min: </label>
                     <select id="soporte" name="soporte" required="">
-                        <option value=0>--</option>
                         <option value=0.001>0.001</option>
                         <option value=0.003>0.003</option>
                         <option value=0.005>0.005</option>
@@ -68,7 +70,6 @@
                     </select><br><br>
                     <label>Nivel mínimo de confianza: </label>
                     <select id="confianza" name="confianza" required="">
-                        <option value=0>--</option>
                         <option value=0.01>0.01</option>
                         <option value=0.02>0.02</option>
                         <option value=0.03>0.03</option>
@@ -81,7 +82,6 @@
                     </select><br><br>
                     <label>Lift Minimo: </label>
                     <select id="lift" name="lift" required="">
-                        <option value=0>--</option>
                         <option value=1>1</option>
                         <option value=2>2</option>
                         <option value=3>3</option>
@@ -101,35 +101,65 @@
 
                 </div>
                 <br>
-                <div class="col-md-6 col-sm-6 ">
+                <div class="col-md-6 col-sm-6 " style="text-align: center;">
                     <div>
-                        <h6 id="Title_grafic1" style="text-align: center;"></h6>
+                        <h6 id="Title_grafic1"></h6>
                     </div>
                     <div id="image">
                         <img id="graphic" width="400" height="400" src="{{ asset('img/img_arules/blanco.png')}}">
                     </div>
                     <div>
-                        <h7 id="textographic" style="text-align: justify;"></h7>
+                        <h7 id="textographic"></h7>
                     </div>
                     <br>
                 </div>
 
-                <div class="col-md-6 col-sm-6 ">
+                <div class="col-md-6 col-sm-6 " style="text-align: center;">
                     <div>
-                        <h6 id="Title_grafic2" style="text-align: center;"></h6>
+                        <h6 id="Title_grafic2"></h6>
                     </div>
                     <div id="image">
                         <img id="plot" width="400" height="400" src="{{ asset('img/img_arules/blanco.png')}}">
                     </div>
                     <div>
-                        <h7 id="textoplot" style="text-align: justify;"></h7>
+                        <h7 id="textoplot"></h7>
                     </div>
                     <br>
                 </div>
 
+                <div class="col-md-6 col-sm-6 " style="text-align: center;">
+                    <div>
+                        <h6 id="Title_grafic3"></h6>
+                    </div>
+                    <div id="image">
+                        <img id="graphic3" width="400" height="500" src="{{ asset('img/img_arules/blanco.png')}}">
+                    </div>
+                    <div>
+                        <h7 id="textographic3"></h7>
+                    </div>
+                    <br>
+                </div>
+
+                <div class="col-md-6 col-sm-6 " style="text-align: center;">
+                    <div>
+                        <h6 id="Title_grafic4"></h6>
+                    </div>
+                    <div id="image">
+                        <img id="graphic4" width="400" height="400" src="{{ asset('img/img_arules/blanco.png')}}">
+                    </div>
+                    <div>
+                        <h7 id="textographic4"></h7>
+                    </div>
+                    <br>
+                     </div>
+
 
                         </div>
                     </div>
+                </div>
+
+                <div id="map2">
+
                 </div>
 
             </div>
@@ -199,10 +229,9 @@
             }).then((result) => {
                 /* Read more about handling dismissals below */
                 if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log('Tiempo de espera agotado, error en procesamiento')
+                    console.log('Tiempo de espera agotado, error en preanálisis')
                 }
             })
-
             $.ajax({
                 url: '/preanalisis',
                 data: {
@@ -210,9 +239,9 @@
                     fecha_env: Time_File
                 },
                 type: 'GET',
-
                 success: function(data) {
                     console.log("Exito")
+                    console.log(data)
                     //Gráfica 1
                     document.getElementById("Title_grafic1").innerHTML = "Gráfica del Codo de Jambú.";
                     document.getElementById("graphic").src = "/img/img_arules/codo_jambu.png?";
@@ -222,6 +251,25 @@
                     document.getElementById("plot").src = "/img/img_arules/distribucion.png?";
                     document.getElementById("textoplot").innerHTML = "En relación a los " + cluster +" clusters deseados, se muestra como se distribuyen los puntos en un plano cartesiano";
                     //Gráfica 3
+                    document.getElementById("Title_grafic3").innerHTML = "Gráfica Distribución de Trayectorias.";
+                    document.getElementById("graphic3").src = "/img/img_arules/density.png?";
+                    document.getElementById("textographic3").innerHTML = "Minimización de la varianza intra-cluster y la maximización de la varianza inter-cluster";
+                    //Gráfica 4
+                    document.getElementById("Title_grafic4").innerHTML = "Gráfica Correlación de Datos.";
+                    document.getElementById("graphic4").src = "/img/img_arules/correlacion.png?";
+                    document.getElementById("textographic4").innerHTML = "Minimización de la varianza intra-cluster y la maximización de la varianza inter-cluster";
+                    //MAPA2
+                    var map2 = L.map('map2').setView([-2.182564, -79.897106], 23);
+                    var markers;
+
+                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                        maxZoom: 18,
+                        id: 'mapbox/streets-v11',
+                        tileSize: 512,
+                        zoomOffset: -1,
+                        accessToken: 'pk.eyJ1Ijoia2V2aW56aW4iLCJhIjoiY2tkY2o2dmZqMTVweDMxcGc3NXh1bDZ5bCJ9.mrd7CJVQ7keJQBCCCbEinQ'
+                    }).addTo(map2);
                 },
                 error: function() {
                     if (soporte == null || soporte == 0) {
@@ -246,11 +294,10 @@
             var support = $('#soporte').val();
             var confidence = $('#confianza').val();
             var lift = $('#lift').val();
-            
-
+            var Time_File = localStorage.getItem('Time_File');
             let timerInterval
             Swal.fire({
-                title: 'Ejecutando Pre-análisis de Kmeans...',
+                title: 'Buscando reglas de Asociación...',
                 html: '',
                 timer: 10000,
                 timerProgressBar: true,
@@ -272,20 +319,23 @@
             }).then((result) => {
                 /* Read more about handling dismissals below */
                 if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log('I was closed by the timer')
+                    console.log('Tiempo de espera agotado, error al buscar relgas')
                 }
             })
 
             $.ajax({
                 url: '/algoritmo/a_rules',
                 data: {
-                    num_cluster: centroide,
-                    fecha: fecha,
+                    var_support: support,
+                    var_confidence: confidence,
+                    var_lift: lift,
+                    fecha_env: Time_File
                 },
                 type: 'GET',
-
                 success: function(data) {
-                    limpiar();
+                    console.log("Exito Apriori")
+                    console.log(data)
+                /*/limpiar();
                     var gold = 0,
                         violet = 0,
                         blue = 0,
@@ -500,6 +550,19 @@
                     document.getElementById("desc").innerHTML = "Sobre el mapa se puede observar un total de " + total + " puntos" +
                         " georreferenciales. Al haber ingresado " + centroide + " centroides los puntos se agrupan al más cercano, dando como resultado que en el centroide de color dorado se encuentan alojados " + gold +" puntos"+texto
                         + ". Recalcando que esta información puede ser utilizada indistintamente del requerimiento del usuario.";
+                    }/*/
+                    cont = 1;
+                    if (cont == 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Chispas, Algo salió mal...',
+                            text:'Lo sentimos, No hemos encontrado Reglas de Asociación'})
+                    } else {
+                        Swal.fire(
+                            'Consulta Exitosa',
+                            'Se han encontrado Reglas de Asociación, Archivo CSV generado con éxito.',
+                            'success'
+                        )
                     }
 
                 },
@@ -631,7 +694,7 @@
                     json.puntos.forEach(element => {
                        console.log(element)
                         var myIcon = L.icon({
-                            iconUrl: '{{ asset("img/icons/marker-icon-blue.png") }}',
+                            iconUrl: '{{ asset("img/icons/marcador-de-posicion.png") }}',
                             iconSize: [30, 30],
                             iconAnchor: [10, 57],
                             popupAnchor: [-3, -76],

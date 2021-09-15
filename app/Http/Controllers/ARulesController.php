@@ -69,33 +69,29 @@ class ARulesController extends Controller
 
     public function preanalisis(Request $request)
     {
-        #$algorith = storage_path() . '/a_rules/preanalisis.py';
         $fecha = $request->fecha_env;
-        $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
-        #$csv = $path . '/coordenadas-130921_00_09_02.csv ';
-        $csv = $path . '/coordenadas-' . $fecha . '.csv ';
+        $path =str_replace('\\', '/', storage_path()) . '/archivos_apriori';
+        $csv = $path . '/coordenadas-' . $fecha . '.csv';
         $cluster = $request->num_cluster;
-        $salida = shell_exec('python '. env('AR_KMEANS') .' '. $csv . ' ' . $cluster);
+        $salida = shell_exec('python "'. env('AR_KMEANS') .'" "'. $csv . '" ' . $cluster);
         json_encode($salida);
         echo 'python '. env('AR_KMEANS') .' '.  $csv . ' ' . $cluster;
         //return [json_encode($salida)];//, json_encode($centroides)];
+        //return json_encode($salida);
     }
     public function algoritmo(Request $request)
     {
-        $algorith = storage_path() . '/eclat/algoritmo.R';
+        $fecha = $request->fecha_env;
         $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
-        $csv = $path . '/coordenadas-' . $fecha_csv . '.csv ';
-        $graphic = $path . '/graphic.png ';
-        $support = $request->support;
-        $confidence = $request->confidence;
-        $lift = $request->lift;
-        $scatterplot = $path . '/scatterplot.png';
-        fclose($fp);
-        shell_exec('Rscript '. $algorith  .' '. $file . ' ' . $support . ' ' . $csv. ' ' . $graphic . ' ' . $scatterplot);
-        $handle = fopen($csv, "r");
+        $csv = $path . '/coordenadas-' . $fecha . '.csv ';
+        $support = $request->var_support;
+        $confidence = $request->var_confidence;
+        $lift = $request->var_lift;
+        shell_exec('python "'. env('AR_APRIORI') .'" "'. $csv . '" "' . $support.'" "'.$confidence.'" "'.$lift.'"');
         $response = [];
+        /*/$handle = fopen($csv, "r");        
         $row = 0;
-         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
              $num = count($data);
 
              if($row != 0){
@@ -116,7 +112,7 @@ class ARulesController extends Controller
                 $row++;
              }
 
-             fclose($handle);
+             fclose($handle)/*/;
 
              return [json_encode($response)];
 

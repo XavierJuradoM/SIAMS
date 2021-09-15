@@ -16,15 +16,30 @@ import folium
 #importing seaborn for statistical plots
 import seaborn as sns
 from sklearn import metrics
+from matplotlib import style
+import matplotlib.ticker as ticker
+import seaborn as sns
+# Configuración matplotlib
+# ==============================================================================
+plt.rcParams['image.cmap'] = "bwr"
+#plt.rcParams['figure.dpi'] = "100"
+plt.rcParams['savefig.bbox'] = "tight"
+style.use('ggplot') or plt.style.use('ggplot')
+
+# Configuración warnings
+# ==============================================================================
+import warnings
+warnings.filterwarnings('ignore')
 
 #FILES
-strFile = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png"
-strFile1 = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png"
-strFile2 = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png"
+strFile = "C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png"
+strFile1 = "C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png"
+strFile2 = "C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png"
+strFile3 = "C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/density.png"
 #ENTRADAS
 arch_inicial= sys.argv[1]
 cluster=sys.argv[2]
-#file_url = 'C:/Users/jtorres/Documents/GitHub/SIAMS/storage/archivos_apriori/coordenadas-120921_21_09_38.csv'
+#file_url = 'C:/Users/Helen Jurado/Documents/GitHub/SIAMS/storage/archivos_apriori/coordenadas-120921_21_09_38.csv'
 #data = pd.read_csv(file_url)
 data = pd.read_csv(arch_inicial)
 n_cltrs=int(cluster)
@@ -33,6 +48,7 @@ data.info()
 data.describe()
 features = data[['latitud', 'longitud']]
 print(features)
+distribution = data[['orden', 'id_trayectoria', 'velocidad']]
 wcss = []
 for i in range(1, n_cltrs+2):
     kmeans = KMeans(n_clusters = i, max_iter = 300)
@@ -42,10 +58,10 @@ plt.plot(range(1, n_cltrs+2,1), wcss,marker='*')
 plt.title("Codo de Jambú")
 plt.xlabel('Número de clusters')
 plt.ylabel('WCSS')
-strFile = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png"
+#strFile = "C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png"
 if os.path.isfile(strFile):
    os.remove(strFile)
-plt.savefig('C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png')
+plt.savefig(strFile)#'C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/codo_jambu.png')
 #plt.show()
 # — — — — — — — — — — — — — — — -Heat map to identify highly correlated variables — — — — — — — — — — — — -
 #-------------------------------Heat map to identify highly correlated variables-------------------------
@@ -56,21 +72,62 @@ sns.heatmap(features.corr(),
             center=0,
             cbar=False,
             cmap="YlGnBu")
-strFile1 = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png"
+#strFile1 = "C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png"
 if os.path.isfile(strFile1):
    os.remove(strFile1)
-plt.savefig('C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png')
+plt.savefig(strFile1)#'C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/correlacion.png')
 #plt.show()
 mydata = data
 mydata.drop(columns = {'id_det_tra','id_trayectoria','orden','longitud','latitud','fecha','coordenadas','tipo_coordenada'}, inplace=True)
 data = features
 #--Checking Outliers
-plt.figure(figsize=(15,10))
-pos = 1
-for i in mydata.columns:
-    plt.subplot(3, 3, pos)
-    sns.boxplot(data=mydata[i])
-    pos += 1
+#plt.figure(figsize=(15,10))
+#pos = 1
+#for i in mydata.columns:
+#    plt.subplot(3, 3, pos)
+#    sns.boxplot(data=mydata[i])
+#    pos += 1
+fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(6, 6))
+sns.distplot(
+    distribution.id_trayectoria,
+    hist    = False,
+    rug     = True,
+    color   = "blue",
+    kde_kws = {'shade': True, 'linewidth': 1},
+    ax      = axes[0]
+)
+axes[0].set_title("Distribución original", fontsize = 'medium')
+axes[0].set_xlabel('Trayectorias', fontsize='small') 
+axes[0].tick_params(labelsize = 6)
+
+sns.distplot(
+    np.sqrt(distribution.id_trayectoria),
+    hist    = False,
+    rug     = True,
+    color   = "blue",
+    kde_kws = {'shade': True, 'linewidth': 1},
+    ax      = axes[1]
+)
+axes[1].set_title("Transformación raíz cuadrada", fontsize = 'medium')
+axes[1].set_xlabel('sqrt(Trayectorias)', fontsize='small') 
+axes[1].tick_params(labelsize = 6)
+
+sns.distplot(
+    np.log(distribution.id_trayectoria),
+    hist    = False,
+    rug     = True,
+    color   = "blue",
+    kde_kws = {'shade': True, 'linewidth': 1},
+    ax      = axes[2]
+)
+axes[2].set_title("Transformación logarítmica", fontsize = 'medium')
+axes[2].set_xlabel('log(Trayectorias)', fontsize='small') 
+axes[2].tick_params(labelsize = 6)
+fig.tight_layout()
+#strFile3 = "C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/density.png"
+if os.path.isfile(strFile3):
+   os.remove(strFile3)
+plt.savefig(strFile3)#'C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/density.png')
 ##Scale the data
 from scipy.stats import zscore
 mydata_z = data.apply(zscore)
@@ -130,10 +187,10 @@ ax.set_ylabel('Longitud', fontsize = 15)
 ax.set_title('SIAMS UG', fontsize = 20)
 color_theme = np.array(colors)
 ax.scatter(df['latitud'],df['longitud'], c=color_theme[df.cluster], s =50)
-strFile2 = "C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png"
+#strFile2 = "C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png"
 if os.path.isfile(strFile2):
    os.remove(strFile2)
-plt.savefig('C:/Users/jtorres/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png')
+plt.savefig(strFile2)#'C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/img/img_arules/distribucion.png')
 plt.show()
 
 
