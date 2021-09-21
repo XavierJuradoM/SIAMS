@@ -41,7 +41,7 @@ def red_neural_pred(data, val_predict, type_package):
         # if mlr.score(X_train,y_train) < 0.1 and ban:
         #     break
         ban = False
-        if mlr.score(X_train,y_train) < range_prediction[type_package]:
+        if mlr.score(X_train,y_train) > range_prediction[type_package]:
             prediction_value = mlr.predict([[val_predict]])[0];
             rest = {
                 "probability": mlr.score(X_train,y_train),
