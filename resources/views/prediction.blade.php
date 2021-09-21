@@ -45,9 +45,10 @@
                                     class="form-control" 
                                     type="number" 
                                     id="x_input" 
-                                    placeholder="Ingrese dato">
+                                    placeholder="Ingrese datos en grados">
                                 </div>
                             </div>
+                            
                             <div class="from-group row" id="seption_hour">
                                 <label class="col-sm-4 col-form-labe" for=""><h6>Ingrese dato(HH:MM):</h6> </label>
                                 <div class="col-sm-4">
@@ -168,6 +169,7 @@
         var latitudes = $('#latitudes');
         var longitudes = $('#longitudes');
         var velocities = $('#velocities');
+        var text_placeholder = "";
         section_hour.style.display = 'none';
 
         const packages = {
@@ -176,12 +178,21 @@
             d: 'distance'
         }
         const defaultPackage = "temperature"
-        
+        const inputs_placeholder = {
+            t: "Ingrese datos en grados",
+            d: "Ingrese datos en metros",
+        }
+        xInput.attr('placeholder',inputs_placeholder['t'])
         const detailsPackage = {
-            t: `DADO LOS CAMBIOS EN LOS NIVELES DE AMBIENTE (TEMPERATURA) SE PREDICE EL TIEMPO DE 
-                DURACION (SEGUNDOS) EN QUE UNA TRAYECTORIA REALIZA SU RECORRIDO.`,
-            d: `DADA POR LA DURACIÓN DE LLEGAR UN PUNTO A OTRO (METROS POR SEGUNDO)`,
-            h: `DADA POR HORAS MAS TRANSCURRIDAS DADA`
+            t: `DEPENDIENDO DE LA TEMPERATURA INGRESADA EN GRADOS SE MOSTRARÁ LA PREDICCIÓN DEL TIEMPO
+            DE DURACIÓN DADO EN SEGUNDOS QUE SE TARDARÁ EL USUARIO EN REALIZAR UNA TRAYECTORIA EN LAS POSIBLES
+            COORDENADAS QUE SE MUESTRAN A CONTINUACIÓN:`,
+            d: `DEPENDIENDO DE LA DISTANCIA INGRESADA EN METROS SE MOSTRARÁ LA PREDICCIÓN DEL TIEMPO
+            DE DURACIÓN DADO EN SEGUNDOS QUE SE TARDARÁ EL USUARIO EN REALIZAR UNA TRAYECTORIA EN LAS POSIBLES
+            COORDENADAS QUE SE MUESTRAN A CONTINUACIÓN:`,
+            h: `DEPENDIENDO DE LA HORA INGRESADA SE MOSTRARÁ LA PREDICCIÓN DEL TIEMPO
+            DE DURACIÓN DADO EN SEGUNDOS QUE SE TARDARÁ EL USUARIO EN REALIZAR UNA TRAYECTORIA EN LAS POSIBLES
+            COORDENADAS QUE SE MUESTRAN A CONTINUACIÓN:`
         }
         details_text.text(detailsPackage['t']);
         $('#package').change(function(){
@@ -190,6 +201,7 @@
 
             currentPackage = $(this).children("option:selected").val()
             namePackage = packages[currentPackage] || defaultPackage
+            text_placeholder = inputs_placeholder[currentPackage] || defaultPackage
             if(namePackage == "hour"){
                 section_hour.style.display = ''
                 section_normal.style.display = 'none'
@@ -199,6 +211,7 @@
             }
             // set details text
             details = detailsPackage[currentPackage] || defaultPackage
+            xInput.attr('placeholder', text_placeholder)
             details_text.text(details)
         });
         $('#init_predict').click(async function(){

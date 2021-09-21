@@ -13,7 +13,7 @@ class PredictionController extends Controller{
     public function getprediction(Request $request){
         $ban = true;
         $rest = [];
-        $timeout = 10;
+        $timeout = 25;
         switch($request->type_package){
             case 'temperature':
                 $timeout = 120;
