@@ -13,16 +13,16 @@ class PredictionController extends Controller{
     public function getprediction(Request $request){
         $ban = true;
         $rest = [];
-        $timeout = 25;
+        $timeout = 10;
         switch($request->type_package){
             case 'temperature':
-                $timeout = 120;
-                break;
-            case 'distance':
                 $timeout = 20;
                 break;
+            case 'distance':
+                $timeout = 6;
+                break;
             case 'hour': 
-                $timeout = 80;
+                $timeout = 10;
                 break;
         }
         error_log($request->xForPrediction);

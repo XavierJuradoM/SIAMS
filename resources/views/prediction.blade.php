@@ -121,7 +121,7 @@
                         <h4 class="text-center text-primary">Coordenadas Obtenidas</h4>
                         <div class="row text-center">
                             <div class="col-sm">
-                                <h4>Velocidad</h4>
+                                <h4>Velocidad (m/s)</h4>
                                 <div class="text-dark" id="velocities">
                     
                                 </div>
@@ -264,8 +264,8 @@
                 return;
             }
             resp = await Swal.fire({
-                title: 'Desea continuar con la prediccion?',
-                text: "Una vez iniciado el proceso no se detendra",
+                title: '¿Desea continuar con la predicción?',
+                text: "Una vez iniciado el proceso no se detendrá",
                 icon: 'info',
                 showCancelButton: true,
                 allowOutsideClick: false,
@@ -434,7 +434,7 @@
             if(response.body.length === 0){
                 Swal.fire(
                     'Coordenadas no disponibles',
-                    'No existen coordenadas con ese valor de prediccion',
+                    'No existen coordenadas con ese valor de predicción',
                     'info'
                 )
                 cleanCoordinates()

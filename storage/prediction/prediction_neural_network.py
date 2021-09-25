@@ -11,8 +11,8 @@ import warnings
 
 def red_neural_pred(data, val_predict, type_package):
     range_prediction = {
-        "temperature": 0.38,#70 con maquina obtima
-        "hour": 0.53,#60 con maquina obtima
+        "temperature": 0.38,#70 con maquina optima
+        "hour": 0.53,#60 con maquina optima
         "distance": 0.95 #datos mas relacionados
     }
     dataset = pd.DataFrame(data,columns={'x','y'})
@@ -27,10 +27,10 @@ def red_neural_pred(data, val_predict, type_package):
     count = 0
     while True:
         X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3)
- #max_iter=5000,
+ 
         mlr = MLPRegressor(
             solver='lbfgs',
-           
+            max_iter=5000,
             alpha=1e-5,
             hidden_layer_sizes=(15,15),
             random_state=1,
