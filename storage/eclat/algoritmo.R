@@ -1,7 +1,6 @@
-library(arules)
-##setwd("C:/Users/ASUS VIvoBook/Downloads")
 
-##trayectorias <-read.csv("data-1628521965545.csv")
+
+library(arules)
 
 args <- commandArgs(TRUE)
 
@@ -10,7 +9,6 @@ support   <- as.numeric(args[2])
 outputcsv <- args[3]
 graphic <- args[4]
 scatterplot <- args[5]
-#setwd(directory)
 trayectorias <-read.csv(filename)
 
 # Transforma  data.frame en transaccional
