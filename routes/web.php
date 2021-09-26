@@ -36,3 +36,10 @@ Route::group(['middleware' => ['web', 'custom_auth']], function () {
 //Route::get('/puntos', 'CoordenadasController@puntos')->name('puntito');
 //Route::get('/algoritmo', 'CoordenadasController@algoritmo')->name('kmeans');
 Route::get('/servicioKmeans', 'CoordenadasController@servicioKmeans')->name('kmeans');
+
+// Prediction routers
+Route::group(['middleware' => ['web', 'custom_auth']], function(){
+    Route::get('/prediction', 'PagesController@prediction')->name('prediction');
+    Route::post('/getprediction', 'PredictionController@getprediction')->name('getprediction');
+    Route::post('/getcoordinates', 'PredictionController@getDataCoordinates')->name('getDataCoordinates');
+});

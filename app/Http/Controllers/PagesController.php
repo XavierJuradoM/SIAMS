@@ -10,4 +10,8 @@ class PagesController extends Controller
     {  
         return view('nuevo');
     }
+
+    public function prediction(){
+        return view('prediction');
+    }
 }
