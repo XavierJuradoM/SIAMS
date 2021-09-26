@@ -164,7 +164,7 @@
             <!-- footer content -->
             <footer>
                 <div class="pull-right">
-                    Todos los derechos reservados
+                    Todos los derechos reservados © Universidad de Guayaquil © 2021
                 </div>
                 <div class="clearfix"></div>
             </footer>

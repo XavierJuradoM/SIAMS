@@ -77,3 +77,30 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## Notas de Xavier
+composer install
+php artisan serve
+php artisan key:generate
+
+Modificar archivo php.ini
+;extension=pdo_pgsql 
+Remover el ';'
+## Notas grupo busqueda de patrones
+
+- Centos / RedHat
+    1. sudo yum install epel-release -y
+    2. sudo yum install R -y
+    3. sudo -i R
+    4. install.packages("arules")
+    5. install.packages("arulesViz")
+
+## Instalación de Librerías
+py -m pip install numpy
+py -m pip install pandas
+py -m pip install matplotlib
+py -m pip install seaborn
+py -m pip install folium
+
+
