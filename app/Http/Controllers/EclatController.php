@@ -45,7 +45,7 @@ class EclatController extends Controller
         $fecha_csv = date("H:i:s");
         $fecha_csv = str_replace(':', '_', $fecha_csv);
 
-        $file = str_replace('\\', '/', storage_path()) . '/archivos_eclat/coordenadas-' . $fecha_csv . '.csv';
+        $file = str_replace('\\', '/', storage_path()) . '/archivos_eclat/datainicial' . $fecha_csv . '.csv';
         $fp = fopen($file, 'w');
 
 
@@ -59,31 +59,37 @@ class EclatController extends Controller
         $scatterplot = $path . '/scatterplot.png';
         fclose($fp);
         shell_exec('Rscript '. $algorith  .' '. $file . ' ' . $support . ' ' . $csv. ' ' . $graphic . ' ' . $scatterplot);
-        $handle = fopen($csv, "w+");
         $response = [];
-        $row = 0;
-         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-             $num = count($data);
+        try {
+            //code...
+            $handle = fopen($csv, "r");
+            $row = 0;
+             while ($data = fgetcsv($handle)) {
+                 $num = count($data);
 
-             if($row != 0){
-                for ($c=1; $c < $num; $c+=2) {
-                    $data[$c] = str_replace("{", "", $data[$c]);
-                        $data[$c] = str_replace("}", "", $data[$c]);
-                        $data[$c] = str_replace("(", "", $data[$c]);
-                        $data[$c] = str_replace(")", "", $data[$c]);
-                        $coord = explode(",", $data[$c]);
-                        $json = [
-                            'longitud' => $coord[0],
-                            'latitud' => $coord[1]
-                        ] ;
-                        array_push($response, $json);
+                 if($row != 0){
+                    for ($c=1; $c < $num; $c+=2) {
+                        $data[$c] = str_replace("{", "", $data[$c]);
+                            $data[$c] = str_replace("}", "", $data[$c]);
+                            $data[$c] = str_replace("(", "", $data[$c]);
+                            $data[$c] = str_replace(")", "", $data[$c]);
+                            $coord = explode(",", $data[$c]);
+                            $json = [
+                                'longitud' => $coord[0],
+                                'latitud' => $coord[1]
+                            ] ;
+                            array_push($response, $json);
 
+                        }
                     }
-                }
-                $row++;
-             }
+                    $row++;
+                 }
 
-             fclose($handle);
+                 fclose($handle);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
 
         return [json_encode($response)];
