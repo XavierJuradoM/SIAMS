@@ -74,8 +74,9 @@ class ARulesController extends Controller
         $csv = $path . '/coordenadas-' . $fecha . '.csv';
         $cluster = $request->num_cluster;
         $salida = shell_exec('python "'. env('AR_KMEANS') .'" "'. $csv . '" ' . $cluster);
-        json_encode($salida);
         echo 'python '. env('AR_KMEANS') .' '.  $csv . ' ' . $cluster;
+        $ayuda = 'python "'. env('AR_KMEANS') .'" "'. $csv . '" ' . $cluster;
+        json_encode($ayuda);
         //return [json_encode($salida)];//, json_encode($centroides)];
         //return json_encode($salida);
     }
@@ -83,38 +84,16 @@ class ARulesController extends Controller
     {
         $fecha = $request->fecha_env;
         $path = str_replace('\\', '/', storage_path()) . '/archivos_apriori';
-        $csv = $path . '/coordenadas-' . $fecha . '.csv ';
+        $csv = $path . '/coordenadas-' . $fecha . '.csv';
         $support = $request->var_support;
         $confidence = $request->var_confidence;
         $lift = $request->var_lift;
-        shell_exec('python "'. env('AR_APRIORI') .'" "'. $csv . '" "' . $support.'" "'.$confidence.'" "'.$lift.'"');
-        $response = [];
-        /*/$handle = fopen($csv, "r");        
-        $row = 0;
-        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-             $num = count($data);
-
-             if($row != 0){
-                for ($c=1; $c < $num; $c+=2) {
-                    $data[$c] = str_replace("{", "", $data[$c]);
-                        $data[$c] = str_replace("}", "", $data[$c]);
-                        $data[$c] = str_replace("(", "", $data[$c]);
-                        $data[$c] = str_replace(")", "", $data[$c]);
-                        $coord = explode(",", $data[$c]);
-                        $json = [
-                            'longitud' => $coord[0],
-                            'latitud' => $coord[1]
-                        ] ;
-                        array_push($response, $json);
-
-                    }
-                }
-                $row++;
-             }
-
-             fclose($handle)/*/;
-
-             return [json_encode($response)];
+        $salida = shell_exec('python "'. env('AR_APRIORI') .'" "'. $csv . '" ' . $support. ' ' .$confidence. ' ' .$lift);
+        //echo 'python "'. env('AR_APRIORI') .'" "'. $csv . '" ' . $support. ' ' .$confidence. ' ' .$lift;
+       // $Texto = 'python "'. env('AR_APRIORI') .'" "'. $csv . '" ' . $support. ' ' .$confidence. ' ' .$lift;    
+        return json_encode($salida);
+        //$response = [];
+        //return [json_encode($Texto)];
 
     }
 

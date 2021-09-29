@@ -209,7 +209,7 @@
             Swal.fire({
                 title: 'Ejecutando Pre-análisis de Kmeans...',
                 html: '',
-                timer: 10000,
+                timer: 50000,
                 timerProgressBar: true,
                 didOpen: () => {
                     Swal.showLoading()
@@ -258,18 +258,6 @@
                     document.getElementById("Title_grafic4").innerHTML = "Gráfica Correlación de Datos.";
                     document.getElementById("graphic4").src = "/img/img_arules/correlacion.png?";
                     document.getElementById("textographic4").innerHTML = "Minimización de la varianza intra-cluster y la maximización de la varianza inter-cluster";
-                    //MAPA2
-                    var map2 = L.map('map2').setView([-2.182564, -79.897106], 23);
-                    var markers;
-
-                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                        maxZoom: 18,
-                        id: 'mapbox/streets-v11',
-                        tileSize: 512,
-                        zoomOffset: -1,
-                        accessToken: 'pk.eyJ1Ijoia2V2aW56aW4iLCJhIjoiY2tkY2o2dmZqMTVweDMxcGc3NXh1bDZ5bCJ9.mrd7CJVQ7keJQBCCCbEinQ'
-                    }).addTo(map2);
                 },
                 error: function() {
                     if (soporte == null || soporte == 0) {
@@ -299,7 +287,7 @@
             Swal.fire({
                 title: 'Buscando reglas de Asociación...',
                 html: '',
-                timer: 10000,
+                timer: 40000,
                 timerProgressBar: true,
                 didOpen: () => {
                     Swal.showLoading()
@@ -334,224 +322,35 @@
                 type: 'GET',
                 success: function(data) {
                     console.log("Exito Apriori")
+                    console.log(JSON.parse(data))
+                    data = JSON.parse(data, function(key, value) {    })
                     console.log(data)
-                /*/limpiar();
-                    var gold = 0,
-                        violet = 0,
-                        blue = 0,
-                        green = 0,
-                        red = 0,
-                        yellow = 0,
-                        orange = 0,
-                        grey = 0;
-                    JSON.parse(data[0]).forEach((element, index) => {
-                        if (index > 0) {
-                            if (element[4] == "0") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-gold.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                gold++;
-                            }
-                            if (element[4] == "1") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-violet.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                violet++;
-                            }
-                            if (element[4] == "2") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-blue.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                blue++;
-                            }
-                            if (element[4] == "3") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-green.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                green++;
-                            }
-                            if (element[4] == "4") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-red.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                red++;
-                            }
-                            if (element[4] == "5") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-yellow.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                yellow++;
-                            }
-                            if (element[4] == "6") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-orange.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                orange++;
-                            }
-                            if (element[4] == "7") {
-                                var myIcon = L.icon({
-                                    iconUrl: '{{ asset("img/icons/marker-icon-grey.png") }}',
-                                    iconSize: [25, 40],
-                                    iconAnchor: [15, 40],
-                                });
-                                L.marker([element[2], element[3]], {
-                                    icon: myIcon
-                                }).addTo(map);
-                                grey++;
-                            }
-                        }
-                    });
+                    cont = 1;/*/
+                    //MAPA2
+                    var map2 = L.map('map2').setView([-2.182564, -79.897106], 23);
+                    var markers;
 
-                    JSON.parse(data[1]).forEach((element, index) => {
-                        if (element[0] == "0") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_gold.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + gold).openPopup();
-                        }
-                        if (element[0] == "1") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_purpura.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + violet).openPopup();
-
-                        }
-                        if (element[0] == "2") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_azul.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + blue).openPopup();
-                        }
-                        if (element[0] == "3") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_verde.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + green).openPopup();
-                        }
-                        if (element[0] == "4") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_rojo.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + red).openPopup();
-                        }
-                        if (element[0] == "5") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_amarillo.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + yellow).openPopup();
-                        }
-                        if (element[0] == "6") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide_naranja.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + orange).openPopup();
-                        }
-                        if (element[0] == "7") {
-                            var myIcon = L.icon({
-                                iconUrl: '{{ asset("img/icons/centroide.png") }}',
-                                iconSize: [50, 50],
-                                iconAnchor: [15, 40],
-                            });
-                            var marker = L.marker([element[1], element[2]], {
-                                icon: myIcon
-                            }).addTo(map);
-                            marker.bindPopup("Numero de puntos: " + grey).openPopup();
-                        }
-                    });
-                    var texto="";
-                    var array1 =[violet, blue, green, red, yellow, orange, grey];
-                    var array2=["violeta", "azul", "verde", "rojo", "amarillo", "naranja", "gris"];
-                    for(var i=0 ; i < array1.length ; i++){
-                        for(var j=0 ; j < array2.length ; j++){
-                            if(array1[i]>0 && i==j){
-                                texto= texto + ", en el " + array2[i] + " " + array1[i];
-                                console.log(", " + array1[i] +" " + array2[i]);
-                            }
-                        }
-                    }
-                    if(gold!=0){
-                    document.getElementById("image").src = "/img/kmeans/poo.png?" + Math.random();
-
-                    var total = gold + violet + blue + green + red + yellow + orange + grey;
-
-                    document.getElementById("texto").innerHTML = "K-means Es un algoritmo de aprendizaje no supervisado que se especializa en agrupar los datos" +
-                        " según sus características el cual permite mostrar mediante este gráfico las respectivas agrupaciones identificadas por distintos colores, teniendo en cuenta el número de centroides ingresados.";
-
-                    document.getElementById("desc").innerHTML = "Sobre el mapa se puede observar un total de " + total + " puntos" +
-                        " georreferenciales. Al haber ingresado " + centroide + " centroides los puntos se agrupan al más cercano, dando como resultado que en el centroide de color dorado se encuentan alojados " + gold +" puntos"+texto
-                        + ". Recalcando que esta información puede ser utilizada indistintamente del requerimiento del usuario.";
-                    }/*/
-                    cont = 1;
+                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                        maxZoom: 18,
+                        id: 'mapbox/streets-v11',
+                        tileSize: 512,
+                        zoomOffset: -1,
+                        accessToken: 'pk.eyJ1Ijoia2V2aW56aW4iLCJhIjoiY2tkY2o2dmZqMTVweDMxcGc3NXh1bDZ5bCJ9.mrd7CJVQ7keJQBCCCbEinQ'
+                    }).addTo(map2);
+                    i = 0;
+                    data.forEach(element => {
+                        i++;
+                       console.log(element)
+                        var myIcon = L.icon({
+                            iconUrl: '{{ asset("img/icons/marcador-de-posicion.png") }}',
+                            iconSize: [30, 30],
+                            iconAnchor: [10, 57],
+                            popupAnchor: [-3, -76],
+                        });
+                        L.marker([element[1], data.longitud[i]], {icon: myIcon}).addTo(map2);
+                        cont++;
+                    }); /*/
                     if (cont == 0) {
                         Swal.fire({
                             icon: 'warning',
@@ -592,9 +391,16 @@
 
             document.getElementById("graphic").src = "{{ asset('img/kmeans/blanco.png')}}";
             document.getElementById("plot").src = "{{ asset('img/kmeans/blanco.png')}}";
+            document.getElementById("graphic3").src = "{{ asset('img/kmeans/blanco.png')}}";
+            document.getElementById("graphic4").src = "{{ asset('img/kmeans/blanco.png')}}";
             document.getElementById("textoplot").innerHTML="";
             document.getElementById("textographic").innerHTML="";
-
+            document.getElementById("textographic3").innerHTML="";
+            document.getElementById("textographic4").innerHTML="";
+            document.getElementById("Title_grafic1").innerHTML="";
+            document.getElementById("Title_grafic2").innerHTML="";
+            document.getElementById("Title_grafic3").innerHTML="";
+            document.getElementById("Title_grafic4").innerHTML="";
             L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                 maxZoom: 18,
@@ -628,7 +434,6 @@
             //document.getElementById("plot").src = '{{ asset("img/kmeans/blanco.png") }}';
             //document.getElementById("textographic").innerHTML="";
             //document.getElementById("textoplot").innerHTML="";
-
 
             map.eachLayer(function(layer) {
                 map.removeLayer(layer);

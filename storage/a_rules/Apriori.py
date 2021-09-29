@@ -1,3 +1,4 @@
+import json
 import numpy as np 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -5,7 +6,9 @@ import matplotlib.pyplot as plt
 import csv
 import sys
 import os
-
+#Ignorar Alertas
+import warnings
+warnings.filterwarnings(action='ignore')
 #ENTRADAS
 arch_inicial= sys.argv[1]
 soporte=sys.argv[2]
@@ -32,6 +35,25 @@ results = list(rules)
 
 from apyori import inspect
 frame = pd.DataFrame(inspect(results),
-                    columns=[ 'ID2', 'ID1','soporte', 'confianza', 'lift'])
-                    
+                    columns=[ 'latitud', 'longitud','soporte', 'confianza', 'lift'])
+
+frame[['latitud', 'longitud']] = frame[['latitud', 'longitud']].astype(str)
+frame['latitud'] = frame['latitud'].str.replace(r"(\(.*\-)","-")
+frame['latitud'] =  frame['latitud'].str.replace(r"\'.*\)","")
+frame['longitud'] = frame['longitud'].str.replace(r"(\(.*\-)","-")
+frame['longitud'] =  frame['longitud'].str.replace(r"\'.*\)","")
+latitud = []
+longitud = []
+
+for la,lon in zip(frame['latitud'],frame['longitud']):
+    latitud.append(la)
+    longitud.append(lon)
+
+result_data = {
+    "latitud": latitud
+    #"longitud": longitud
+}
+
+rest = json.dumps(result_data)
+print(rest)           
 frame.to_csv('C:/Users/Helen Jurado/Documents/GitHub/SIAMS/public/files/a_rules/Rules-Apriori.csv', encoding='utf-8')
