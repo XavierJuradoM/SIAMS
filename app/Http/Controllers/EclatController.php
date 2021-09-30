@@ -41,7 +41,7 @@ class EclatController extends Controller
                 $value->id_trayectoria
             ]);
         }
-
+        info($matrix);
         $fecha_csv = date("H:i:s");
         $fecha_csv = str_replace(':', '_', $fecha_csv);
 
@@ -84,11 +84,12 @@ class EclatController extends Controller
                     }
                     $row++;
                  }
-
+                 info($response);
                  fclose($handle);
 
         } catch (\Throwable $th) {
-            //throw $th;
+            error_log('error en el proceso.....');
+            error_log($th);
         }
 
 
